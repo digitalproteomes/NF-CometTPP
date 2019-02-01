@@ -40,7 +40,7 @@ process cometSearch {
 if(!params.no_pool) {
     // Aggregate individual search results into a merged pep.xml
     process pooledTpp {
-	publishDir 'Results/Comet', mode: 'copy'
+	publishDir 'Results/Comet'
 	
 	input:
 	file pepxmls from cometOut.collect()
@@ -53,7 +53,6 @@ if(!params.no_pool) {
 	file 'comet_merged.pep.xml.pIstats'
 	file 'comet_merged.prot-MODELS.html'
 	file 'comet_merged.prot.xml' into tppProtOut
-	file protein_db
 
 	"""
         xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
