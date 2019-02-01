@@ -20,6 +20,8 @@ if(params.help) {
 
 
 process cometSearch {
+    publishDir 'Results/Comet'
+    
     input:
     file mzXML from file(params.mzxml_folder)
     file comet_params from file(params.comet_params)
@@ -27,6 +29,7 @@ process cometSearch {
 
     output:
     file '*.pep.xml' into cometOut
+    file mzXML
 
     """
     comet $mzXML
