@@ -18,13 +18,13 @@ if(params.help) {
 }
 
 
-mzXMLFiles = file(params.mzxml_folder)
 
 process cometSearch {
     input:
-    file mzXML from mzXMLFiles
-    file("$params.comet_params")
-    
+    file mzXML from file(params.mzxml_folder)
+    file comet_params from file(params.comet_params)
+    file protein_db from file(params.protein_db)
+
     output:
     file '*.pep.xml' into cometOut
 
@@ -41,7 +41,7 @@ if(!params.no_pool) {
 	
 	input:
 	file pepxmls from cometOut.collect()
-	file("$params.protein_db")
+        file protein_db from file(params.protein_db)
 
 	output:
 	file 'comet_merged.pep.xml' into tppPepOut
@@ -59,7 +59,7 @@ else {
 	
 	input:
 	file pepxml from cometOut
-	file("$params.protein_db")
+	file protein_df from file(params.protein_db)
 
 	output:
 	file '*.pep.xml' into tppPepOut
@@ -80,7 +80,7 @@ process mayu {
 
     input:
     file pepxml from tppPepOut1
-    file("$params.comet_params")
+    file(params.comet_params)
 
     output:
     file("mayu_*")
