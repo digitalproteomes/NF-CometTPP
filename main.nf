@@ -114,6 +114,6 @@ process tppStat {
     file '*.summary.txt' into tppStatOut
     
     """
-    calctppstat.pl -i $pepxml -d $params.decoy --full > ${pepxml}.summary.txt
+    /usr/local/tpp/cgi-bin/calctppstat.pl -i $pepxml -d $params.decoy --full > ${pepxml}.summary.txt
     """
 }
