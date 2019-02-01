@@ -42,7 +42,6 @@ if(!params.no_pool) {
 	input:
 	file pepxmls from cometOut.collect()
         file protein_db from file(params.protein_db)
-	file protein_db from file(params.protein_db)
 
 	output:
 	file 'comet_merged.pep.xml' into tppPepOut
