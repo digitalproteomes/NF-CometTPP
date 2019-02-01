@@ -45,6 +45,10 @@ if(!params.no_pool) {
 
 	output:
 	file 'comet_merged.pep.xml' into tppPepOut
+	file 'comet_merged.pep-MODELS.html'
+	file 'comet_merged.pep.xml.index'
+	file 'comet_merged.pep.xml.pIstats'
+	file 'comet_merged.prot-MODELS.html'
 	file 'comet_merged.prot.xml' into tppProtOut
 	file protein_db
 
