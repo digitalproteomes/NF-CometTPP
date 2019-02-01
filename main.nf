@@ -37,7 +37,7 @@ process cometSearch {
 if(!params.no_pool) {
     // Aggregate individual search results into a merged pep.xml
     process pooledTpp {
-	publishDir 'Results/Comet'
+	publishDir 'Results/Comet', mode: 'copy'
 	
 	input:
 	file pepxmls from cometOut.collect()
