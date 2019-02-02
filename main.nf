@@ -88,13 +88,14 @@ process mayu {
     input:
     file pepxml from tppPepOut1
     file comet_params from (params.comet_params)
-
+    file params.protein_db
+    
     output:
     file("mayu_*")
-
+    
     """
     Mayu.pl -A $pepxml \
-    -C \$(perl -ne 'if( \$_ =~ /database_name =(.*)/ ) {print \$1;}' $comet_params) \
+    -C $params.protein_db \
     -E $params.decoy \
     -M mayu_$pepxml \
     -P pepFDR=0.01:1
