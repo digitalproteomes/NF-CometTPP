@@ -8,7 +8,7 @@ if(params.help) {
     log.info "  --mzxml_folder: files to be searched (default: $params.mzxml_folder)"
     log.info "  --comet_params: comet parameter file (default: $params.comet_params)"
     log.info "  --protein_db:   comet parameter file (default: $params.comet_params)"
-    log.info "  --tpp:          TPP options (default: $params.tpp_opt)"
+    log.info "  --tpp:          TPP options (default: $params.tpp)"
     log.info "  --decoy:        decoy prefix (default: $params.decoy)"
     log.info "  --no_pool:      do not pool results at the TPP step (default: $params.no_pool)"
     log.info ""
@@ -66,14 +66,18 @@ else {
 	
 	input:
 	file pepxml from cometOut
-	file protein_df from file(params.protein_db)
+	file protein_db from file(params.protein_db)
 
 	output:
-	file '*.pep.xml' into tppPepOut
-	file '*.prot.xml' into tppProtOut
+	file '*_sep.pep.xml' into tppPepOut
+	file '*_sep.prot.xml' into tppProtOut
+	file '*_sep.pep-MODELS.html'
+	file '*_sep.pep.xml.index'
+	file '*_sep.pep.xml.pIstats'
+	file '*_sep.prot-MODELS.html'
 
 	"""
-        xinteract $params.tpp -d$params.decoy $pepxml
+        xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
         """
     }
 }
@@ -88,14 +92,14 @@ process mayu {
     input:
     file pepxml from tppPepOut1
     file comet_params from (params.comet_params)
-    file params.protein_db
+    file db from file(params.protein_db)
     
     output:
     file("mayu_*")
     
     """
     Mayu.pl -A $pepxml \
-    -C $params.protein_db \
+    -C $db \
     -E $params.decoy \
     -M mayu_$pepxml \
     -P pepFDR=0.01:1
