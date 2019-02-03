@@ -21,7 +21,7 @@ if(params.help) {
 
 process cometSearch {
     publishDir 'Results/Comet'
-    afterScript 'chmod g+rw Results/Comet'
+    afterScript "chmod g+rw $workflow.launchDir/Results/Comet"
     
     input:
     file mzXML from file(params.mzxml_folder)
