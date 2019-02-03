@@ -21,6 +21,7 @@ if(params.help) {
 
 process cometSearch {
     publishDir 'Results/Comet'
+    afterScript 'chmod g+rw Results/Comet'
     
     input:
     file mzXML from file(params.mzxml_folder)
