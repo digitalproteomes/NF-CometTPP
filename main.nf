@@ -10,7 +10,7 @@ if(params.help) {
     log.info "  --protein_db:   comet parameter file (default: $params.comet_params)"
     log.info "  --tpp:          TPP options (default: $params.tpp_opt)"
     log.info "  --decoy:        decoy prefix (default: $params.decoy)"
-    log.info "  --no_pool:      do not pool results at the TPP step (default: $params.pool)"
+    log.info "  --no_pool:      do not pool results at the TPP step (default: $params.no_pool)"
     log.info ""
     log.info "Results will be stored in Results/Comet"
     log.info ""
