@@ -107,9 +107,12 @@ if(!params.no_pool) {
 	file 'comet_merged.pep.xml.pIstats'
 	file 'comet_merged.prot-MODELS.html'
 	file 'comet_merged.prot.xml' into tppProtOut
+	file(protein_db) // Required for ProteinProphet visualization
 
+	// xinteract and refactor links in prot.xml 
 	"""
         xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
+	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
         """
     }
 }
@@ -129,9 +132,12 @@ else {
 	file '*_sep.pep.xml.index'
 	file '*_sep.pep.xml.pIstats'
 	file '*_sep.prot-MODELS.html'
+	file(protein_db) // Required for ProteinProphet visualization
 
+	// xinteract and refactor links in prot.xml 
 	"""
         xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
+	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g ${pepxml}_sep.prot.xml
         """
     }
 }
@@ -176,4 +182,10 @@ process tppStat {
     """
     /usr/local/tpp/cgi-bin/calctppstat.pl -i $pepxml -d $params.decoy --full > ${pepxml}.summary.txt
     """
+}
+
+workflow.onComplete {
+    // Make the Comet results folder writable for the www-data group
+    // for TPP visualization.
+    "chmod g+w Results/Comet".execute()
 }
