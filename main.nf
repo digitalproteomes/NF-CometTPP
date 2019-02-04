@@ -75,10 +75,6 @@ if(params.help) {
 process cometSearch {
     // Search all mzXML files in $params.mzxml_folder with Comet
     publishDir 'Results/Comet'
-    // Assuming that the apache server used for visualization is part
-    // of the same group as the user, give it write access to the
-    // result folder
-    afterScript "chmod g+rw $workflow.launchDir/Results/Comet"
     
     input:
     file mzXML from file(params.mzxml_folder)
