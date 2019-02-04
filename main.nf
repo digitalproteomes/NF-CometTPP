@@ -20,7 +20,11 @@ if(params.help) {
 
 
 process cometSearch {
+    // Search all mzXML files in Results/Mzxml with Comet
     publishDir 'Results/Comet'
+    // Assuming that the apache server used for visualization is part
+    // of the same group as the user, give it write access to the
+    // result folder
     afterScript "chmod g+rw $workflow.launchDir/Results/Comet"
     
     input:
@@ -39,7 +43,7 @@ process cometSearch {
 
 
 if(!params.no_pool) {
-    // Aggregate individual search results into a merged pep.xml
+    // Aggregate individual search results into a merged TPP analysis
     process pooledTpp {
 	publishDir 'Results/Comet'
 	
@@ -61,7 +65,7 @@ if(!params.no_pool) {
     }
 }
 else {
-    // Separate TPP analysis for each search result
+    // Perform a separate TPP analysis for each search result
     process splitTpp {
 	publishDir 'Results/Comet'
 	
@@ -88,6 +92,7 @@ tppPepOut.into{ tppPepOut1; tppPepOut2}
 
 
 process mayu {
+    // For each TPP analysis run Mayu
     publishDir 'Results/Comet'
 
     input:
@@ -109,6 +114,7 @@ process mayu {
 
 
 process tppStat {
+    // For each TPP analysis run calctppstat
     publishDir 'Results/Comet'
     
     input:
