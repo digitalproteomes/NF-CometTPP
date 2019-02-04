@@ -7,7 +7,7 @@ if(params.help) {
     log.info "  --help:         show this message and exit"
     log.info "  --mzxml_folder: files to be searched (default: $params.mzxml_folder)"
     log.info "  --comet_params: comet parameter file (default: $params.comet_params)"
-    log.info "  --protein_db:   comet parameter file (default: $params.comet_params)"
+    log.info "  --protein_db:   comet parameter file (default: $params.protein_db)"
     log.info "  --tpp:          TPP options (default: $params.tpp)"
     log.info "  --decoy:        decoy prefix (default: $params.decoy)"
     log.info "  --no_pool:      do not pool results at the TPP step (default: $params.no_pool)"
@@ -20,7 +20,7 @@ if(params.help) {
 
 
 process cometSearch {
-    // Search all mzXML files in Results/Mzxml with Comet
+    // Search all mzXML files in $params.mzxml_folder with Comet
     publishDir 'Results/Comet'
     // Assuming that the apache server used for visualization is part
     // of the same group as the user, give it write access to the
