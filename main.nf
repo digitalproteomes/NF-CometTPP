@@ -58,7 +58,7 @@ if(params.help) {
     log.info ""
     log.info "Options:"
     log.info "  --help:         show this message and exit"
-    log.info "  --mzxml_folder: files to be searched (default: $params.mzxml_folder)"
+    log.info "  --dda_folder: files to be searched (default: $params.dda_folder)"
     log.info "  --comet_params: comet parameter file (default: $params.comet_params)"
     log.info "  --protein_db:   comet parameter file (default: $params.protein_db)"
     log.info "  --tpp:          TPP options (default: $params.tpp)"
@@ -73,11 +73,11 @@ if(params.help) {
 
 
 process cometSearch {
-    // Search all mzXML files in $params.mzxml_folder with Comet
+    // Search all mzXML files in $params.dda_folder with Comet
     publishDir 'Results/Comet'
     
     input:
-    file mzXML from file(params.mzxml_folder)
+    file mzXML from file("${params.dda_folder}/*.mzXML")
     file comet_params from file(params.comet_params)
     file protein_db from file(params.protein_db)
 
