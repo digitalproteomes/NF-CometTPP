@@ -74,7 +74,7 @@ if(params.help) {
 
 process cometSearch {
     // Search all mzXML files in $params.dda_folder with Comet
-    publishDir 'Results/Comet'
+    publishDir 'Results/Comet', mode: 'link'
     
     input:
     file mzXML from file("${params.dda_folder}/*.mzXML")
@@ -97,7 +97,7 @@ process cometSearch {
 if(!params.no_pool) {
     // Aggregate individual search results into a merged TPP analysis
     process pooledTpp {
-	publishDir 'Results/Comet'
+	publishDir 'Results/Comet', mode: 'link'
 	
 	input:
 	file pepxmls from cometOut.collect()
@@ -122,7 +122,7 @@ if(!params.no_pool) {
 else {
     // Perform a separate TPP analysis for each search result
     process splitTpp {
-	publishDir 'Results/Comet'
+	publishDir 'Results/Comet', mode: 'link'
 	
 	input:
 	file pepxml from cometOut
@@ -151,7 +151,7 @@ tppPepOut.into{ tppPepOut1; tppPepOut2}
 
 process mayu {
     // For each TPP analysis run Mayu
-    publishDir 'Results/Comet'
+    publishDir 'Results/Comet', mode: 'link'
 
     input:
     file pepxml from tppPepOut1
@@ -173,7 +173,7 @@ process mayu {
 
 process tppStat {
     // For each TPP analysis run calctppstat
-    publishDir 'Results/Comet'
+    publishDir 'Results/Comet', mode: 'link'
     
     input:
     file pepxml from tppPepOut2
