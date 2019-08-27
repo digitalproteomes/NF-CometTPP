@@ -74,8 +74,10 @@ if(params.help) {
 
 process cometSearch {
     // Search all mzXML files in $params.dda_folder with Comet
-    publishDir 'Results/Comet', mode: 'link'
+    cpus params.comet_threads
     
+    publishDir 'Results/Comet', mode: 'link'
+
     input:
     file mzXML from file("${params.dda_folder}/*.mzXML")
     file comet_params from file(params.comet_params)
@@ -88,6 +90,7 @@ process cometSearch {
     """
     # Set proteins DB
     sed -i s,db_path,$protein_db, $comet_params
+    sed -i 's,num_threads = 0,num_threads = ${params.comet_threads},' $comet_params
 
     comet $mzXML
     """
@@ -146,13 +149,33 @@ else {
 }
 
 // Duplicate tppPepOut channel so we can feed it to two processes
-tppPepOut.into{ tppPepOut1; tppPepOut2}
+tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3}
+
+tppProtOut.into{ tppProtOut1; tppProtOut2}
+
+
+process stPeter {
+    input:
+    file protxml from tppProtOut1
+    file pepxml from tppPepOut3
+    file mzXML from file("${params.dda_folder}/*.mzXML")
+
+    output:
+
+    
+    script:
+    """
+    StPeter $protxml
+    """
+}
 
 
 process mayu {
     // For each TPP analysis run Mayu
     publishDir 'Results/Comet', mode: 'link'
 
+    errorStrategy 'ignore'
+    
     input:
     file pepxml from tppPepOut1
     file comet_params from (params.comet_params)
@@ -177,7 +200,7 @@ process tppStat {
     
     input:
     file pepxml from tppPepOut2
-    file protxml from tppProtOut
+    file protxml from tppProtOut2
 
     output:
     file '*.summary.txt' into tppStatOut
