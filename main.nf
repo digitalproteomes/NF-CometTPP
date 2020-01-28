@@ -66,6 +66,7 @@ if(params.help) {
     log.info "  --no_pool:      do not pool results at the TPP step (default: $params.no_pool)"
     log.info ""
     log.info "Results will be stored in Results/Comet"
+    log.info "TSV export of pep and prot XML (filtered at 1% FDR) will be under Results/TppExport"
     log.info ""
     exit 1
 }
@@ -111,10 +112,10 @@ if(!params.no_pool) {
 
 	output:
 	file 'comet_merged.pep.xml' into tppPepOut
-	file 'comet_merged.pep-MODELS.html'
+	file 'comet_merged.pep-MODELS.html' into tppPepModelOut
 	file 'comet_merged.pep.xml.index'
 	file 'comet_merged.pep.xml.pIstats'
-	file 'comet_merged.prot-MODELS.html'
+	file 'comet_merged.prot-MODELS.html' into tppProtModelOut
 	file 'comet_merged.prot.xml' into tppProtOut
 	file(protein_db) // Required for ProteinProphet visualization
 
@@ -138,10 +139,10 @@ else {
 	output:
 	file '*_sep.pep.xml' into tppPepOut
 	file '*_sep.prot.xml' into tppProtOut
-	file '*_sep.pep-MODELS.html'
+	file '*_sep.pep-MODELS.html' into tppPepModelOut
 	file '*_sep.pep.xml.index'
 	file '*_sep.pep.xml.pIstats'
-	file '*_sep.prot-MODELS.html'
+	file '*_sep.prot-MODELS.html' into tppProtModelOut
 	file(protein_db) // Required for ProteinProphet visualization
 
 	// xinteract and refactor links in prot.xml 
@@ -153,9 +154,9 @@ else {
 }
 
 // Duplicate tppPepOut channel so we can feed it to two processes
-tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3}
+tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4}
 
-tppProtOut.into{ tppProtOut1; tppProtOut2}
+tppProtOut.into{ tppProtOut1; tppProtOut2; tppProtOut3}
 
 
 process stPeter {
@@ -213,6 +214,47 @@ process tppStat {
     /usr/local/tpp/cgi-bin/calctppstat.pl -i $pepxml -d $params.decoy --full > ${pepxml}.summary.txt
     """
 }
+
+
+process pepxml2tsv {
+    tag "$pepXml"
+    
+    publishDir 'Results/TppExport', mode: 'link'
+
+    input:
+    file pepXmlModels from tppPepModelOut
+    file pepXml from tppPepOut4
+    file pepxsl from file(params.pepxml_xsl)
+    
+    output:
+    file '*.tsv'
+
+    """
+    PROB=\$(get_prophet_prob.py -i $pepXmlModels)
+    xsltproc --param p_threshold \$PROB $pepxsl $pepXml > ${pepXml}.tsv
+    """
+}
+
+
+process protxml2tsv {
+    tag "$protXml"
+    
+    publishDir 'Results/TppExport', mode: 'link'
+
+    input:
+    file protXmlModels from tppProtModelOut
+    file protXml from tppProtOut3
+    file protxsl from file(params.protxml_xsl)
+    
+    output:
+    file '*.tsv'
+
+    """
+    PROB=\$(get_prophet_prob.py -i $protXmlModels)
+    xsltproc --param p_threshold \$PROB $protxsl $protXml > ${protXml}.tsv
+    """
+}
+
 
 workflow.onComplete {
     // Make the Comet results folder writable for the www-data group
