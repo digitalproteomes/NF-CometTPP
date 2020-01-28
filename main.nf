@@ -75,6 +75,8 @@ if(params.help) {
 process cometSearch {
     // Search all mzXML files in $params.dda_folder with Comet
     cpus params.comet_threads
+    // Human, 3 variable mods, semi, 2 missed cleavages and some margin for safety
+    memory 30.GB
     
     publishDir 'Results/Comet', mode: 'link'
 
@@ -85,7 +87,7 @@ process cometSearch {
 
     output:
     file '*.pep.xml' into cometOut
-    file mzXML
+    file mzXML into cometMzXMLOut
 
     """
     # Set proteins DB
@@ -105,6 +107,7 @@ if(!params.no_pool) {
 	input:
 	file pepxmls from cometOut.collect()
         file protein_db from file(params.protein_db)
+	file mzXML from cometMzXMLOut.collect()
 
 	output:
 	file 'comet_merged.pep.xml' into tppPepOut
@@ -130,6 +133,7 @@ else {
 	input:
 	file pepxml from cometOut
 	file protein_db from file(params.protein_db)
+	file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 
 	output:
 	file '*_sep.pep.xml' into tppPepOut
