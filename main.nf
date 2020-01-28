@@ -224,7 +224,7 @@ process pepxml2tsv {
     input:
     file pepXmlModels from tppPepModelOut
     file pepXml from tppPepOut4
-    file pepxsl from file(params.pepxml_xsl)
+    file pepxsl from file("$baseDir/Xslt/pepxml2tsv.xsl")
     
     output:
     file '*.tsv'
@@ -244,7 +244,7 @@ process protxml2tsv {
     input:
     file protXmlModels from tppProtModelOut
     file protXml from tppProtOut3
-    file protxsl from file(params.protxml_xsl)
+    file protxsl from file("$baseDir/Xslt/protxml2tsv.xsl")
     
     output:
     file '*.tsv'
