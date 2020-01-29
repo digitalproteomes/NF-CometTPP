@@ -23,7 +23,7 @@ Patrick Pedrioli-->
   <xsl:variable name="xpress" select="boolean(pepx:msms_pipeline_analysis/pepx:msms_run_summary/pepx:spectrum_query/pepx:search_result/pepx:search_hit/pepx:analysis_result[@analysis='xpress'])"/>
   <xsl:variable name="iprophet" select="boolean(pepx:msms_pipeline_analysis/pepx:msms_run_summary/pepx:spectrum_query/pepx:search_result/pepx:search_hit/pepx:analysis_result[@analysis='interprophet'])"/>
 
-  <xsl:template match="/">peptide&#9;charge&#9;neutral mass&#9;prior aa&#9;post aa&#9;modified seq&#9;probability<xsl:if test="$iprophet">&#9;iprophet probability</xsl:if><xsl:if test="$asap">&#9;asapratio ratio&#9;asapratio error</xsl:if><xsl:if test="$xpress">&#9;xpress ratio&#9;xpress light area&#9;xpress heavy area</xsl:if>&#9;spectrum<xsl:text>
+  <xsl:template match="/">peptide&#9;charge&#9;neutral_mass&#9;prior_aa&#9;post_aa&#9;modified_seq&#9;probability<xsl:if test="$iprophet">&#9;iprophet_probability</xsl:if><xsl:if test="$asap">&#9;asapratio_ratio&#9;asapratio_error</xsl:if><xsl:if test="$xpress">&#9;xpress_ratio&#9;xpress_light_area&#9;xpress_heavy_area</xsl:if>&#9;spectrum<xsl:text>
 </xsl:text>
 <xsl:apply-templates/>
   </xsl:template>
