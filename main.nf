@@ -109,6 +109,7 @@ if(!params.no_pool) {
 	file pepxmls from cometOut.collect()
         file protein_db from file(params.protein_db)
 	file mzXML from cometMzXMLOut.collect()
+	file libra_params from file(params.libra_params)
 
 	output:
 	file 'comet_merged.pep.xml' into tppPepOut
@@ -135,7 +136,8 @@ else {
 	file pepxml from cometOut
 	file protein_db from file(params.protein_db)
 	file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
-
+	file libra_params from file(params.libra_params)
+	
 	output:
 	file '*_sep.pep.xml' into tppPepOut
 	file '*_sep.prot.xml' into tppProtOut
