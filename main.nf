@@ -152,7 +152,7 @@ else {
 	"""
         xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g ${pepxml}_sep.prot.xml
-	sed -ri 's|/tmp/nxf.{11}|/Results/Comet|'g ${pepxml}_sep.prot.xml
+	sed -ri 's|/tmp/nxf.{11}||'g ${pepxml}_sep.prot.xml
         """
     }
 }
