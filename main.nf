@@ -96,6 +96,8 @@ process cometSearch {
     sed -i 's,num_threads = 0,num_threads = ${params.comet_threads},' $comet_params
 
     comet $mzXML
+
+    # Correct links in pep.xml if scratch was used
     sed -ri 's|/tmp/nxf.{11}/||'g ${mzXML.simpleName}.pep.xml
     """
 }
@@ -125,6 +127,9 @@ if(!params.no_pool) {
 	"""
         xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
+
+	# Correct links in prot.xml if scratch was used
+	sed -ri 's|/tmp/nxf.{11}||'g comet_merged.prot.xml
         """
     }
 }
@@ -152,6 +157,8 @@ else {
 	"""
         xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g ${pepxml}_sep.prot.xml
+
+	# Correct links in prot.xml if scratch was used
 	sed -ri 's|/tmp/nxf.{11}||'g ${pepxml}_sep.prot.xml
         """
     }
