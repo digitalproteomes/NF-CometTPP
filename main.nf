@@ -108,7 +108,8 @@ if(!params.no_pool) {
 	input:
 	file pepxmls from cometOut.collect()
         file protein_db from file(params.protein_db)
-	file mzXML from cometMzXMLOut.collect()
+	file mzXML from file("${params.dda_folder}/*.mzXML")
+//	file mzXML from cometMzXMLOut.collect()
 	file libra_params from file(params.libra_params)
 
 	output:
@@ -135,7 +136,8 @@ else {
 	input:
 	file pepxml from cometOut
 	file protein_db from file(params.protein_db)
-	file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
+	file mzXML from file("${params.dda_folder}/*.mzXML")
+//	file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	file libra_params from file(params.libra_params)
 	
 	output:
