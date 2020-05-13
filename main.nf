@@ -96,7 +96,7 @@ process cometSearch {
     sed -i 's,num_threads = 0,num_threads = ${params.comet_threads},' $comet_params
 
     comet $mzXML
-    sed -ri 's|/tmp/nxf\..\{10\}/|/Results/Comet/|'g ${mzXML.simpleName}.pep.xml
+    sed -ri 's|/tmp/nxf.{11}/|/Results/Comet/|'g ${mzXML.simpleName}.pep.xml
     """
 }
 
