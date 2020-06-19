@@ -126,8 +126,6 @@ if(!params.no_pool) {
 	"""
         xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
-	sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g ${pepxml}_sep.pep.xml
-	sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g ${pepxml}_sep.prot.xml
         """
     }
 }
