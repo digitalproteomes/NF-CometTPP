@@ -74,15 +74,15 @@ The `--no_pool` parameter can be used to bypass this behaviour and analyze all M
 
 ## Workflow parameters:
 
-*  --help:          show an help message
-*  --dda_folder:    folder with DDA files to be searched (default: Data/DDA)
-*  --comet_params:  comet parameter file (default: Params/comet.params)
-*  --comet_threads: number of cores to be used in comet search (default: 8)
-*  --protein_db:    fasta formatted sequence database file (default: Results/Databases/proteome.fasta)
-*  --tpp:           options to pass to TPP xinteract (default: -OAPdplIw -PPM)
-*  --decoy:         decoy prefix used in protein_db (default: DECOY_)
-*  --no_pool:       do not pool results at the TPP step (default: false)
-*  --libra_params:  libra parameter file (default: NO_FILE)
+*  `--help`:          show an help message
+*  `--dda_folder`:    folder with DDA files to be searched (default: Data/DDA)
+*  `--comet_params`:  comet parameter file (default: Params/comet.params)
+*  `--comet_threads`: number of cores to be used in comet search (default: 8)
+*  `--protein_db`:    fasta formatted sequence database file (default: Results/Databases/proteome.fasta)
+*  `--tpp`:           options to pass to TPP xinteract (default: -OAPdplIw -PPM)
+*  `--decoy`:         decoy prefix used in protein_db (default: DECOY_)
+*  `--no_pool`:       do not pool results at the TPP step (default: false)
+*  `--libra_params`:  libra parameter file (default: NO_FILE)
 
 
 ## Workflow results:
