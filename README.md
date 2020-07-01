@@ -1,5 +1,6 @@
 # Nextflow workflow for searching DDA MS data through Comet and the Trans Proteomics Pipeline
 
+
 ## Overview:
 
 This is a [Nextflow](https://www.nextflow.io/) based pipeline for the assignment and validation of DDA mass spectrometry data.
@@ -10,65 +11,65 @@ The [Trans Proteomics Pipeline](http://tools.proteomecenter.org/wiki/index.php?t
 
 The default workflow will pool identifications from multiple database searches into aggregated pep and prot xml files:
 
-.    mzXML files
-.         +
-.         |
-. +-------v--------+
-. |DB engine search|
-. +----------------+
-. |
-. |
-. | +--------+
-. +->search 1+--+                           ++        ++
-. | +--------+  |                           |          |
-. |             | Pool  +----------------+  | +------+ |
-. +->  ...  +-----------> PeptideProphet +--> |XPRESS| |
-. |             |       +----------------+  | |Libra | |
-. | +--------+  |                           | +------+ |
-. +->search 2+--+                           ++   +    ++
-.   +--------+                                   |
-.                                                |
-.                              +----+            |
-.                              |Mayu<-+          |
-.                              +----+ | +--------v-----+
-.                                     +-+ProteinProphet|
-.                       +-----------+ | +--------------+
-.                       |calctppstat<-+
-.                       +-----------+ |
-.                                     |
-.                           +-------+ |
-.                           |StPeter<-+
-.                           +-------+
+>    mzXML files
+>         +
+>         |
+> +-------v--------+
+> |DB engine search|
+> +----------------+
+> |
+> |
+> | +--------+
+> +->search 1+--+                           ++        ++
+> | +--------+  |                           |          |
+> |             | Pool  +----------------+  | +------+ |
+> +->  ...  +-----------> PeptideProphet +--> |XPRESS| |
+> |             |       +----------------+  | |Libra | |
+> | +--------+  |                           | +------+ |
+> +->search 2+--+                           ++   +    ++
+>   +--------+                                   |
+>                                                |
+>                              +----+            |
+>                              |Mayu<-+          |
+>                              +----+ | +--------v-----+
+>                                     +-+ProteinProphet|
+>                       +-----------+ | +--------------+
+>                       |calctppstat<-+
+>                       +-----------+ |
+>                                     |
+>                           +-------+ |
+>                           |StPeter<-+
+>                           +-------+
 
 
 The `--no_pool` parameter can be used to bypass this behaviour and analyze all MS files independently:
 
-.    mzXML files
-.         +
-.         |
-. +-------v--------+
-. |DB engine search|
-. +----------------+
-. |                                                                +-------+
-. |                                                              +->StPeter|
-. |                                                              | +-------+
-. |                                                              |
-. |                                ++        ++                  | +----+
-. |                                |          |                  +->Mayu|
-. | +--------+ +----------------+  | +------+ | +--------------+ | +----+
-. +->search 1+-> PeptideProphet +--> |XPRESS| +->ProteinProphet+-+ +-----------+
-. | +--------+ +----------------+  | |Libra | | +--------------+ +->calctppstat|
-. |                                | +------+ |                    +-----------+
-. +->  ...           ...           |   ...    |       ...          +----+
-. |                                |          |                  +->Mayu|
-. | +--------+ +----------------+  | +------+ | +--------------+ | +----+
-. +->search 2+-> PeptideProphet +--> |XPRESS| +->ProteinProphet+-+ +-----------+
-.   +--------+ +----------------+  | |Libra | | +--------------+ +->calctppstat|
-.                                  | +------+ |                  | +-----------+
-.                                  ++        ++                  |
-.                                                                | +-------+
-.                                                                +->StPeter|
-.                                                                  +-------+
+>    mzXML files
+>         +
+>         |
+> +-------v--------+
+> |DB engine search|
+> +----------------+
+> |                                                                +-------+
+> |                                                              +->StPeter|
+> |                                                              | +-------+
+> |                                                              |
+> |                                ++        ++                  | +----+
+> |                                |          |                  +->Mayu|
+> | +--------+ +----------------+  | +------+ | +--------------+ | +----+
+> +->search 1+-> PeptideProphet +--> |XPRESS| +->ProteinProphet+-+ +-----------+
+> | +--------+ +----------------+  | |Libra | | +--------------+ +->calctppstat|
+> |                                | +------+ |                    +-----------+
+> +->  ...           ...           |   ...    |       ...          +----+
+> |                                |          |                  +->Mayu|
+> | +--------+ +----------------+  | +------+ | +--------------+ | +----+
+> +->search 2+-> PeptideProphet +--> |XPRESS| +->ProteinProphet+-+ +-----------+
+>   +--------+ +----------------+  | |Libra | | +--------------+ +->calctppstat|
+>                                  | +------+ |                  | +-----------+
+>                                  ++        ++                  |
+>                                                                | +-------+
+>                                                                +->StPeter|
+>                                                                  +-------+
 
 
 ## Workflow parameters:
