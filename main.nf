@@ -237,15 +237,12 @@ else {
 tppProtOutPtm.into{ tppProtOutPtm1; tppProtOutPtm2 }
 tppProtOutIpro.into{ tppProtOutIpro1; tppProtOutIpro2 }
 
-tppPepOutPtm.into{ tppPepOutPtm1; tppPepOutPtm2 }
-tppPepOutPtm1.view{ "ptm pep: $it" }
-
 if( tppProtOutPtm1.count().val > 0 ) {
     log.info "PTMprophet"
-    tppPepOutPtm2.set{ tppPepOut }
+    tppPepOutPtm.set{ tppPepOut }
     tppProtOutPtm2.set{ tppProtOut }
     tppPepModelOutPtm.set{ tppPepModelOut }
-    tppProtModelOut.set{ tppProtModelOutPtm }
+    tppProtModelOutPtm.set{ tppProtModelOut }
 }
 else if( tppProtOutIpro1.count().val > 0 ) {
     log.info "iProphet"
