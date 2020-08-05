@@ -237,13 +237,14 @@ else {
 tppProtOutPtm.into{ tppProtOutPtm1; tppProtOutPtm2 }
 tppProtOutIpro.into{ tppProtOutIpro1; tppProtOutIpro2 }
 
-if( tppProtOutPtm1.count().val > 0 ) {
+
+if( tppProtOutPtm1.count().val > 1 ) {
     tppPepOut = tppPepOutPtm
     tppProtOut = tppProtOutPtm2
     tppPepModelOut = tppPepModelOutPtm
     tppProtModelOut = tppProtModelOutPtm
 }
-else if( tppProtOutIpro1.count().val > 0 ) {
+else if( tppProtOutIpro1.count().val > 1 ) {
     tppPepOut = tppPepOutIpro
     tppProtOut = tppProtOutIpro2
     tppPepModelOut = tppPepModelOutIpro
