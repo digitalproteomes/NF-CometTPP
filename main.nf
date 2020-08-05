@@ -239,11 +239,14 @@ tppProtOutIpro.into{ tppProtOutIpro1; tppProtOutIpro2 }
 
 
 if( tppProtOutPtm1.count().val > 1 ) {
-    tppPepOut = tppPepOutPtm
-    tppProtOut = Channel.create()
-    tppProtOut = tppProtOutPtm2
-    tppPepModelOut = tppPepModelOutPtm
-    tppProtModelOut = tppProtModelOutPtm
+    tppPepOutPtm.into{ tppPepOut }
+    tppProtOutPtm2.into{ tppProtOut }
+    tppPepModelOutPtm.into{ tppPepModelOut }
+    tppProtModelOut.into{ tppProtModelOutPtm }
+//    tppPepOut = tppPepOutPtm
+//    tppProtOut = tppProtOutPtm2
+//    tppPepModelOut = tppPepModelOutPtm
+//    tppProtModelOut = tppProtModelOutPtm
 }
 else if( tppProtOutIpro1.count().val > 1 ) {
     tppPepOut = tppPepOutIpro
