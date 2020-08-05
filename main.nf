@@ -127,19 +127,33 @@ if(!params.no_pool) {
 	file libra_params from file(params.libra_params)
 
 	output:
+	// Normal run
 	file 'comet_merged.pep.xml' into tppPepOut
 	file 'comet_merged.pep-MODELS.html' into tppPepModelOut
 	file 'comet_merged.pep.xml.index'
 	file 'comet_merged.pep.xml.pIstats'
-	file 'comet_merged.prot-MODELS.html' into tppProtModelOut
-	file 'comet_merged.prot.xml' into tppProtOut
+	file 'comet_merged.prot-MODELS.html' optional true into tppProtModelOut
+	file 'comet_merged.prot.xml' optional true into tppProtOut
+	// iProphet run
+	file 'comet_merged.ipro.pep.xml' optional true into tppPepOutIpro
+	file 'comet_merged.ipro.pep-MODELS.html' optional true into tppPepModelOutIpro
+	file 'comet_merged.pep.xml.index' optional true
+	file 'comet_merged.ipro.prot-MODELS.html' optional true into tppProtModelOutIpro
+	file 'comet_merged.ipro.prot.xml' optional true into tppProtOutIpro
+	// PTMProphet run
+	file 'comet_merged.ptm.ipro.pep.xml' optional true into tppPepOutPtm
+	file 'comet_merged.ptm.ipro.pep-MODELS.html' optional true into tppPepModelOutPtm
+	file 'comet_merged.ptm.pep.xml.index' optional true
+	file 'comet_merged.ptm.ipro.prot-MODELS.html' optional true into tppProtModelOutPtm
+	file 'comet_merged.ptm.ipro.prot.xml' optional true into tppProtOutPtm
 	file(protein_db) // Required for ProteinProphet visualization
-
+	
 	// xinteract and refactor links in prot.xml 
 	"""
         xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
-	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
+	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g *.prot.xml
         """
+	// 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
     }
 }
 else {
@@ -171,6 +185,85 @@ else {
         """
     }
 }
+
+// For a standard pooled run tppProtOutPtm and tppProtOutIpro are
+// going to be empty
+// NOTE: these are also going to be empty if the xinteract parameters
+// don't request ProteinProphet in combination with iProphet or PTMProphet
+
+// For a pooled PTMProphet run we are going to have
+//
+// * PeptideProphet
+// comet_merged.pep.xml
+// comet_merged.pep-MODELS.html
+// comet_merged.pep.xml.index
+// comet_merged.pep.xml.pIstats
+
+// * iProphet
+// comet_merged.ipro.pep.xml
+// comet_merged.ipro.pep-MODELS.html
+// comet_merged.ipro.pep.xml.index
+
+// * PTMProphet
+// comet_merged.ptm.ipro.pep.xml
+// comet_merged.ptm.ipro.pep-MODELS.html
+// comet_merged.ptm.ipro.pep.xml.index
+
+// * ProteinProphet
+// comet_merged.ptm.ipro.prot.xml
+// comet_merged.ptm.ipro.prot-MODELS.html
+// comet_merged.ptm.ipro.prot.xml
+
+// For a pooled iProphet run we are going to have
+//
+// * PeptideProphet
+// comet_merged.pep.xml
+// comet_merged.pep-MODELS.html
+// comet_merged.pep.xml.index
+// comet_merged.pep.xml.pIstats
+
+// * iProphet
+// comet_merged.ipro.pep.xml
+// comet_merged.ipro.pep-MODELS.html
+// comet_merged.ipro.pep.xml.index
+
+// * ProteinProphet
+// comet_merged.ipro.prot.xml
+// comet_merged.ipro.prot-MODELS.html
+// comet_merged.ipro.prot.xml
+
+// If we are dealing with a PTMProphet run ignore iProphet output
+
+tppProtOutPtm.into{ tppProtOutPtm1; tppProtOutPtm2 }
+tppProtOutIpro.into{ tppProtOutIpro1; tppProtOutIpro2 }
+
+if( tppProtOutPtm1.count().val > 0 ) {
+    tppPepOut = tppPepOutPtm
+    tppProtOut = tppProtOutPtm2
+    tppPepModelOut = tppPepModelOutPtm
+    tppProtModelOut = tppProtModelOutPtm
+}
+else if( tppProtOutIpro1.count().val > 0 ) {
+    tppPepOut = tppPepOutIpro
+    tppProtOut = tppProtOutIpro2
+    tppPepModelOut = tppPepModelOutIpro
+    tppProtModelOut = tppProtModelOutIpro
+}
+
+
+// if( tppProtOutPtm1.count().val > 0 ) {
+//     tppPepOut = tppPepOut.mix(tppPepOutPtm)
+//     tppProtOut = tppProtOut.mix(tppProtOutPtm2)
+//     tppPepModelOut = tppPepModelOut.mix(tppPepModelOutPtm)
+//     tppProModelOut = tppProModelOut.mix(tppProModelOutPtm)
+// }
+// else if( tppProtOutIpro1.count().val > 0 ) {
+//     tppPepOut = tppPepOut.mix(tppPepOutIpro)
+//     tppProtOut = tppProtOut.mix(tppProtOutIpro2)
+//     tppPepModelOut = tppPepModelOut.mix(tppPepModelOutIpro)
+//     tppProModelOut = tppProModelOut.mix(tppProModelOutIpro)
+// }
+
 
 // Duplicate tppPepOut channel so we can feed it to two processes
 tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4}
