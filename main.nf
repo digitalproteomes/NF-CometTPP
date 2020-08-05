@@ -240,6 +240,7 @@ tppProtOutIpro.into{ tppProtOutIpro1; tppProtOutIpro2 }
 
 if( tppProtOutPtm1.count().val > 1 ) {
     tppPepOut = tppPepOutPtm
+    tppProtOut = Channel.create()
     tppProtOut = tppProtOutPtm2
     tppPepModelOut = tppPepModelOutPtm
     tppProtModelOut = tppProtModelOutPtm
