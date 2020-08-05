@@ -137,7 +137,7 @@ if(!params.no_pool) {
 	// iProphet run
 	file 'comet_merged.ipro.pep.xml' optional true into tppPepOutIpro
 	file 'comet_merged.ipro.pep-MODELS.html' optional true into tppPepModelOutIpro
-	file 'comet_merged.pep.xml.index' optional true
+	file 'comet_merged.ipro.pep.xml.index' optional true
 	file 'comet_merged.ipro.prot-MODELS.html' optional true into tppProtModelOutIpro
 	file 'comet_merged.ipro.prot.xml' optional true into tppProtOutIpro
 	// PTMProphet run
@@ -237,22 +237,22 @@ else {
 tppProtOutPtm.into{ tppProtOutPtm1; tppProtOutPtm2 }
 tppProtOutIpro.into{ tppProtOutIpro1; tppProtOutIpro2 }
 
+tppPepOutPtm.into{ tppPepOutPtm1; tppPepOutPtm2 }
+tppPepOutPtm1.view{ "ptm pep: $it" }
 
-if( tppProtOutPtm1.count().val > 1 ) {
-    tppPepOutPtm.into{ tppPepOut }
-    tppProtOutPtm2.into{ tppProtOut }
-    tppPepModelOutPtm.into{ tppPepModelOut }
-    tppProtModelOut.into{ tppProtModelOutPtm }
-//    tppPepOut = tppPepOutPtm
-//    tppProtOut = tppProtOutPtm2
-//    tppPepModelOut = tppPepModelOutPtm
-//    tppProtModelOut = tppProtModelOutPtm
+if( tppProtOutPtm1.count().val > 0 ) {
+    log.info "PTMprophet"
+    tppPepOutPtm2.set{ tppPepOut }
+    tppProtOutPtm2.set{ tppProtOut }
+    tppPepModelOutPtm.set{ tppPepModelOut }
+    tppProtModelOut.set{ tppProtModelOutPtm }
 }
-else if( tppProtOutIpro1.count().val > 1 ) {
-    tppPepOut = tppPepOutIpro
-    tppProtOut = tppProtOutIpro2
-    tppPepModelOut = tppPepModelOutIpro
-    tppProtModelOut = tppProtModelOutIpro
+else if( tppProtOutIpro1.count().val > 0 ) {
+    log.info "iProphet"
+    tppPepOutIpro.set{ tppPepOut }
+    tppProtOutIpro2.set{ tppProtOut }
+    tppPepModelOutIpro.set{ tppPepModelOut }
+    tppProtModelOutIpro.set{ tppProtModelOut }
 }
 
 
@@ -271,9 +271,9 @@ else if( tppProtOutIpro1.count().val > 1 ) {
 
 
 // Duplicate tppPepOut channel so we can feed it to two processes
-tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4}
+tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4 }
 
-tppProtOut.into{ tppProtOut1; tppProtOut2; tppProtOut3}
+tppProtOut.into{ tppProtOut1; tppProtOut2; tppProtOut3; tppProtOut4 }
 
 
 process stPeter {
