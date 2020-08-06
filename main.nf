@@ -178,6 +178,8 @@ if(!params.no_pool) {
 	    output:
 	    file 'comet_merged.ptm.ipro.pep.xml' into tppPepOutRaw
 	    file 'comet_merged.ptm.ipro.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.ipro.pep-MODELS.html'
+	    file 'comet_merged.pep-MODELS.html'
 	    file 'comet_merged.ptm.pep.xml.index' optional true
 	    file 'comet_merged.ptm.ipro.prot-MODELS.html' into tppProtModelOut
 	    file 'comet_merged.ptm.ipro.prot.xml' into tppProtOutRaw
@@ -203,6 +205,7 @@ if(!params.no_pool) {
 	    output:
 	    file 'comet_merged.ipro.pep.xml' into tppPepOutRaw
 	    file 'comet_merged.ipro.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.pep-MODELS.html'
 	    file 'comet_merged.ipro.pep.xml.index' optional true
 	    file 'comet_merged.ipro.prot-MODELS.html' optional true into tppProtModelOut
 	    file 'comet_merged.ipro.prot.xml' optional true into tppProtOutRaw
@@ -260,6 +263,8 @@ else {
 	    file '*_sep.ptm.ipro.pep.xml' into tppPepOutRaw
 	    file '*_sep.ptm.ipro.prot.xml' optional true into tppProtOutRaw
 	    file '*_sep.ptm.ipro.pep-MODELS.html' into tppPepModelOut
+	    file '*_sep.ipro.pep-MODELS.html'
+	    file '*_sep.pep-MODELS.html'
 	    file '*_sep.ptm.ipro.pep.xml.index' optional true
 	    file '*_sep.ptm.ipro.prot-MODELS.html' optional true into tppProtModelOut
 	    file(protein_db) // Required for ProteinProphet visualization
@@ -285,6 +290,7 @@ else {
 	    file '*_sep.ipro.pep.xml' into tppPepOutRaw
 	    file '*_sep.ipro.prot.xml' optional true into tppProtOutRaw
 	    file '*_sep.ipro.pep-MODELS.html' into tppPepModelOut
+	    file '*_sep.pep-MODELS.html'
 	    file '*_sep.ipro.pep.xml.index' optional true
 	    file '*_sep.ipro.prot-MODELS.html' optional true into tppProtModelOut
 	    file(protein_db) // Required for ProteinProphet visualization
