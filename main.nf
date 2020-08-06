@@ -114,134 +114,6 @@ process cometSearch {
     """
 }
 
-
-if(!params.no_pool) {
-    // Aggregate individual search results into a merged TPP analysis
-    
-    // We need to handle simple, iProphet and PTMProphet cases separately
-    if ( params.tpp.indexOf("-M") != -1 ) {
-	// PTMProphet
-	process pooledTppPtm {
-	    publishDir 'Results/Comet', mode: 'link'
-	    
-	    input:
-	    file pepxmls from cometOut.collect()
-            file protein_db from file(params.protein_db)
-	    file mzXML from cometMzXMLOut.collect()
-	    file libra_params from file(params.libra_params)
-
-	    output:
-	    file 'comet_merged.ptm.ipro.pep.xml' into tppPepOut
-	    file 'comet_merged.ptm.ipro.pep-MODELS.html' into tppPepModelOut
-	    file 'comet_merged.ptm.pep.xml.index' optional true
-	    file 'comet_merged.ptm.ipro.prot-MODELS.html' into tppProtModelOut
-	    file 'comet_merged.ptm.ipro.prot.xml' into tppProtOutRaw
-	    file(protein_db) // Required for ProteinProphet visualization
-	    
-	    // xinteract for PTMProphet
-	    """
-            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
-            """
-	}	
-    }
-    else if ( params.tpp.indexOf("-i") != -1 ) {
-	// iProphet
-	process pooledTppIpro {
-	    publishDir 'Results/Comet', mode: 'link'
-	    
-	    input:
-	    file pepxmls from cometOut.collect()
-            file protein_db from file(params.protein_db)
-	    file mzXML from cometMzXMLOut.collect()
-	    file libra_params from file(params.libra_params)
-
-	    output:
-	    file 'comet_merged.ipro.pep.xml' into tppPepOut
-	    file 'comet_merged.ipro.pep-MODELS.html' into tppPepModelOut
-	    file 'comet_merged.ipro.pep.xml.index' optional true
-	    file 'comet_merged.ipro.prot-MODELS.html' optional true into tppProtModelOut
-	    file 'comet_merged.ipro.prot.xml' optional true into tppProtOutRaw
-	    file(protein_db) // Required for ProteinProphet visualization
-	    
-	    // xinteract for iProphet
-	    """
-            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
-            """
-	}	
-    }
-    else {
-	// Simple
-	process pooledTpp {
-	    publishDir 'Results/Comet', mode: 'link'
-	    
-	    input:
-	    file pepxmls from cometOut.collect()
-            file protein_db from file(params.protein_db)
-	    file mzXML from cometMzXMLOut.collect()
-	    file libra_params from file(params.libra_params)
-
-	    output:
-	    // Normal run
-	    file 'comet_merged.pep.xml' into tppPepOut
-	    file 'comet_merged.pep-MODELS.html' into tppPepModelOut
-	    file 'comet_merged.pep.xml.index'
-	    file 'comet_merged.pep.xml.pIstats'
-	    file 'comet_merged.prot-MODELS.html' optional true into tppProtModelOut
-	    file 'comet_merged.prot.xml' optional true into tppProtOutRaw
-	    file(protein_db) // Required for ProteinProphet visualization
-	    
-	    // xinteract
-	    """
-            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
-            """
-	}
-    }    
-}
-else {
-    // Perform a separate TPP analysis for each search result
-    process splitTpp {
-	publishDir 'Results/Comet', mode: 'link'
-	
-	input:
-	file pepxml from cometOut
-	file protein_db from file(params.protein_db)
-	file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
-	file libra_params from file(params.libra_params)
-	
-	output:
-	file '*_sep.pep.xml' into tppPepOut
-	file '*_sep.prot.xml' optional true into tppProtOut
-	file '*_sep.pep-MODELS.html' into tppPepModelOut
-	file '*_sep.pep.xml.index'
-	file '*_sep.pep.xml.pIstats'
-	file '*_sep.prot-MODELS.html' optional true into tppProtModelOut
-	file(protein_db) // Required for ProteinProphet visualization
-
-	// xinteract and refactor links in prot.xml 
-	"""
-        xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
-	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g ${pepxml}_sep.prot.xml
-	sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g ${pepxml}_sep.pep.xml
-	sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g ${pepxml}_sep.prot.xml
-        """
-    }
-}
-
-process refactorXml {
-    publishDir 'Results/Comet', mode: 'link'
-
-    input:
-    file protxml from tppProtOutRaw
-
-    output:
-    file protxml into tppProtOut
-
-    // We cannot do it inplace or the prot.xml does not register as an output 
-    """
-    sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g $protxml 
-    """
-}
-
 // For a standard pooled run tppProtOutPtm and tppProtOutIpro are
 // going to be empty
 // NOTE: these are also going to be empty if the xinteract parameters
@@ -287,6 +159,202 @@ process refactorXml {
 // comet_merged.ipro.prot.xml
 // comet_merged.ipro.prot-MODELS.html
 // comet_merged.ipro.prot.xml
+
+if(!params.no_pool) {
+    // Aggregate individual search results into a merged TPP analysis
+    
+    // We need to handle simple, iProphet and PTMProphet cases separately
+    if ( params.tpp.indexOf("-M") != -1 ) {
+	// PTMProphet
+	process pooledTppPtm {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxmls from cometOut.collect()
+            file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect()
+	    file libra_params from file(params.libra_params)
+
+	    output:
+	    file 'comet_merged.ptm.ipro.pep.xml' into tppPepOutRaw
+	    file 'comet_merged.ptm.ipro.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.ptm.pep.xml.index' optional true
+	    file 'comet_merged.ptm.ipro.prot-MODELS.html' into tppProtModelOut
+	    file 'comet_merged.ptm.ipro.prot.xml' into tppProtOutRaw
+	    file(protein_db) // Required for ProteinProphet visualization
+	    
+	    // xinteract for PTMProphet
+	    """
+            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
+            """
+	}	
+    }
+    else if ( params.tpp.indexOf("-i") != -1 ) {
+	// iProphet
+	process pooledTppIpro {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxmls from cometOut.collect()
+            file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect()
+	    file libra_params from file(params.libra_params)
+
+	    output:
+	    file 'comet_merged.ipro.pep.xml' into tppPepOutRaw
+	    file 'comet_merged.ipro.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.ipro.pep.xml.index' optional true
+	    file 'comet_merged.ipro.prot-MODELS.html' optional true into tppProtModelOut
+	    file 'comet_merged.ipro.prot.xml' optional true into tppProtOutRaw
+	    file(protein_db) // Required for ProteinProphet visualization
+	    
+	    // xinteract for iProphet
+	    """
+            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
+            """
+	}	
+    } 
+    else {
+	// Simple
+	process pooledTpp {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxmls from cometOut.collect()
+            file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect()
+	    file libra_params from file(params.libra_params)
+
+	    output:
+	    // Normal run
+	    file 'comet_merged.pep.xml' into tppPepOutRaw
+	    file 'comet_merged.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.pep.xml.index'
+	    file 'comet_merged.pep.xml.pIstats'
+	    file 'comet_merged.prot-MODELS.html' optional true into tppProtModelOut
+	    file 'comet_merged.prot.xml' optional true into tppProtOutRaw
+	    file(protein_db) // Required for ProteinProphet visualization
+	    
+	    // xinteract
+	    """
+            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
+            """
+	}
+    }
+}
+else {
+    // Perform a separate TPP analysis for each search result
+
+    if ( params.tpp.indexOf("-M") != -1 ) {
+	//PTMProphet
+	process splitTppPtm {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxml from cometOut
+	    file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
+	    file libra_params from file(params.libra_params)
+	    
+	    output:
+	    file '*_sep.ptm.ipro.pep.xml' into tppPepOutRaw
+	    file '*_sep.ptm.ipro.prot.xml' optional true into tppProtOutRaw
+	    file '*_sep.ptm.ipro.pep-MODELS.html' into tppPepModelOut
+	    file '*_sep.ptm.ipro.pep.xml.index'
+	    file '*_sep.ptm.ipro.pep.xml.pIstats'
+	    file '*_sep.ptm.ipro.prot-MODELS.html' optional true into tppProtModelOut
+	    file(protein_db) // Required for ProteinProphet visualization
+
+	    // xinteract and refactor links in prot.xml 
+	    """
+            xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
+            """
+	}
+    }
+    else if ( params.tpp.indexOf("-i") != -1 ) {
+	//iProphet
+	process splitTppIpro {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxml from cometOut
+	    file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
+	    file libra_params from file(params.libra_params)
+	    
+	    output:
+	    file '*_sep.ipro.pep.xml' into tppPepOutRaw
+	    file '*_sep.ipro.prot.xml' optional true into tppProtOutRaw
+	    file '*_sep.ipro.pep-MODELS.html' into tppPepModelOut
+	    file '*_sep.ipro.pep.xml.index'
+	    file '*_sep.ipro.pep.xml.pIstats'
+	    file '*_sep.ipro.prot-MODELS.html' optional true into tppProtModelOut
+	    file(protein_db) // Required for ProteinProphet visualization
+
+	    // xinteract and refactor links in prot.xml 
+	    """
+            xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
+            """
+	}
+    }
+    else {
+	// Simple
+	process splitTpp {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxml from cometOut
+	    file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
+	    file libra_params from file(params.libra_params)
+	    
+	    output:
+	    file '*_sep.pep.xml' into tppPepOutRaw
+	    file '*_sep.prot.xml' optional true into tppProtOutRaw
+	    file '*_sep.pep-MODELS.html' into tppPepModelOut
+	    file '*_sep.pep.xml.index'
+	    file '*_sep.pep.xml.pIstats'
+	    file '*_sep.prot-MODELS.html' optional true into tppProtModelOut
+	    file(protein_db) // Required for ProteinProphet visualization
+
+	    // xinteract and refactor links in prot.xml 
+	    """
+            xinteract $params.tpp -d$params.decoy -N${pepxml}_sep.pep.xml $pepxml
+            """
+	}
+    }
+}
+
+
+process refactorPepXml {
+    publishDir 'Results/Comet', mode: 'link'
+
+    input:
+    file pepxml from tppPepOutRaw
+
+    output:
+    file pepxml into tppPepOut
+
+    """
+    sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g $pepxml
+    """
+}
+
+
+process refactorProtXml {
+    publishDir 'Results/Comet', mode: 'link'
+
+    input:
+    file protxml from tppProtOutRaw
+
+    output:
+    file protxml into tppProtOut
+
+    """
+    sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g $protxml 
+    sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g $protxml
+    """
+}
 
 // Duplicate tppPepOut channel so we can feed it to two processes
 tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4 }
