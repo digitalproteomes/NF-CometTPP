@@ -22,8 +22,9 @@ Patrick Pedrioli-->
   <xsl:variable name="asap" select="boolean(pepx:msms_pipeline_analysis/pepx:msms_run_summary/pepx:spectrum_query/pepx:search_result/pepx:search_hit/pepx:analysis_result[@analysis='asapratio'])"/>
   <xsl:variable name="xpress" select="boolean(pepx:msms_pipeline_analysis/pepx:msms_run_summary/pepx:spectrum_query/pepx:search_result/pepx:search_hit/pepx:analysis_result[@analysis='xpress'])"/>
   <xsl:variable name="iprophet" select="boolean(pepx:msms_pipeline_analysis/pepx:msms_run_summary/pepx:spectrum_query/pepx:search_result/pepx:search_hit/pepx:analysis_result[@analysis='interprophet'])"/>
+  <xsl:variable name="ptmprophet" select="boolean(pepx:msms_pipeline_analysis/pepx:msms_run_summary/pepx:spectrum_query/pepx:search_result/pepx:search_hit/pepx:analysis_result[@analysis='ptmprophet'])"/>
 
-  <xsl:template match="/">peptide&#9;charge&#9;neutral_mass&#9;prior_aa&#9;post_aa&#9;modified_seq&#9;probability<xsl:if test="$iprophet">&#9;iprophet_probability</xsl:if><xsl:if test="$asap">&#9;asapratio_ratio&#9;asapratio_error</xsl:if><xsl:if test="$xpress">&#9;xpress_ratio&#9;xpress_light_area&#9;xpress_heavy_area</xsl:if>&#9;spectrum&#9;protein<xsl:text>
+  <xsl:template match="/">peptide&#9;charge&#9;neutral_mass&#9;prior_aa&#9;post_aa&#9;modified_seq&#9;probability<xsl:if test="$iprophet">&#9;iprophet_probability</xsl:if><xsl:if test="$ptmprophet">&#9;ptm_probability</xsl:if><xsl:if test="$asap">&#9;asapratio_ratio&#9;asapratio_error</xsl:if><xsl:if test="$xpress">&#9;xpress_ratio&#9;xpress_light_area&#9;xpress_heavy_area</xsl:if>&#9;spectrum&#9;protein<xsl:text>
 </xsl:text>
 <xsl:apply-templates/>
   </xsl:template>
@@ -58,6 +59,20 @@ Patrick Pedrioli-->
 	</xsl:if>
       </xsl:if>
 
+      <!-- PtmProphet -->
+      <xsl:if test="$ptmprophet">
+      	<xsl:if test="pepx:analysis_result[@analysis='ptmprophet']">
+      	  <xsl:text>&#9;</xsl:text>
+      	  <xsl:for-each select="pepx:analysis_result[@analysis='ptmprophet']/pepx:ptmprophet_result/pepx:mod_aminoacid_probability">
+      	    <xsl:value-of select="@position"/><xsl:text>/</xsl:text><xsl:value-of select="@probability"/><xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
+      	  </xsl:for-each>
+      	</xsl:if>
+      	<xsl:if test="not(pepx:analysis_result[@analysis='ptmprophet'])">
+      	  <xsl:text>&#9;</xsl:text>
+      	</xsl:if>
+      </xsl:if>
+
+      
       <!-- ASAPRAtio -->
       <xsl:if test="$asap">
 	<xsl:if test="pepx:analysis_result[@analysis='asapratio']">
