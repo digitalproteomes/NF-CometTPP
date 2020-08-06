@@ -147,7 +147,7 @@ if(!params.no_pool) {
 	    // 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
 	}	
     }
-    else if ( params.tpp.indexOf("-i") ) {
+    else if ( params.tpp.indexOf("-i") != -1 ) {
 	// iProphet
 	process pooledTppIpro {
 	    publishDir 'Results/Comet', mode: 'link'
