@@ -260,8 +260,7 @@ else {
 	    file '*_sep.ptm.ipro.pep.xml' into tppPepOutRaw
 	    file '*_sep.ptm.ipro.prot.xml' optional true into tppProtOutRaw
 	    file '*_sep.ptm.ipro.pep-MODELS.html' into tppPepModelOut
-	    file '*_sep.ptm.ipro.pep.xml.index'
-	    file '*_sep.ptm.ipro.pep.xml.pIstats'
+	    file '*_sep.ptm.ipro.pep.xml.index' optional true
 	    file '*_sep.ptm.ipro.prot-MODELS.html' optional true into tppProtModelOut
 	    file(protein_db) // Required for ProteinProphet visualization
 
@@ -286,8 +285,7 @@ else {
 	    file '*_sep.ipro.pep.xml' into tppPepOutRaw
 	    file '*_sep.ipro.prot.xml' optional true into tppProtOutRaw
 	    file '*_sep.ipro.pep-MODELS.html' into tppPepModelOut
-	    file '*_sep.ipro.pep.xml.index'
-	    file '*_sep.ipro.pep.xml.pIstats'
+	    file '*_sep.ipro.pep.xml.index' optional true
 	    file '*_sep.ipro.prot-MODELS.html' optional true into tppProtModelOut
 	    file(protein_db) // Required for ProteinProphet visualization
 
