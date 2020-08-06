@@ -117,44 +117,92 @@ process cometSearch {
 
 if(!params.no_pool) {
     // Aggregate individual search results into a merged TPP analysis
-    process pooledTpp {
-	publishDir 'Results/Comet', mode: 'link'
-	
-	input:
-	file pepxmls from cometOut.collect()
-        file protein_db from file(params.protein_db)
-	file mzXML from cometMzXMLOut.collect()
-	file libra_params from file(params.libra_params)
 
-	output:
-	// Normal run
-	file 'comet_merged.pep.xml' into tppPepOut
-	file 'comet_merged.pep-MODELS.html' into tppPepModelOut
-	file 'comet_merged.pep.xml.index'
-	file 'comet_merged.pep.xml.pIstats'
-	file 'comet_merged.prot-MODELS.html' optional true into tppProtModelOut
-	file 'comet_merged.prot.xml' optional true into tppProtOut
-	// iProphet run
-	file 'comet_merged.ipro.pep.xml' optional true into tppPepOutIpro
-	file 'comet_merged.ipro.pep-MODELS.html' optional true into tppPepModelOutIpro
-	file 'comet_merged.ipro.pep.xml.index' optional true
-	file 'comet_merged.ipro.prot-MODELS.html' optional true into tppProtModelOutIpro
-	file 'comet_merged.ipro.prot.xml' optional true into tppProtOutIpro
-	// PTMProphet run
-	file 'comet_merged.ptm.ipro.pep.xml' optional true into tppPepOutPtm
-	file 'comet_merged.ptm.ipro.pep-MODELS.html' optional true into tppPepModelOutPtm
-	file 'comet_merged.ptm.pep.xml.index' optional true
-	file 'comet_merged.ptm.ipro.prot-MODELS.html' optional true into tppProtModelOutPtm
-	file 'comet_merged.ptm.ipro.prot.xml' optional true into tppProtOutPtm
-	file(protein_db) // Required for ProteinProphet visualization
-	
-	// xinteract and refactor links in prot.xml 
-	"""
-        xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
-	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g *.prot.xml
-        """
-	// 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
+    // We need to handle simple, iProphet and PTMProphet cases separately
+
+    if ( params.tpp.indexOf("-M") != -1 ) {
+	// PTMProphet
+	process pooledTppPtm {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxmls from cometOut.collect()
+            file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect()
+	    file libra_params from file(params.libra_params)
+
+	    output:
+	    file 'comet_merged.ptm.ipro.pep.xml' into tppPepOut
+	    file 'comet_merged.ptm.ipro.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.ptm.pep.xml.index' optional true
+	    file 'comet_merged.ptm.ipro.prot-MODELS.html' into tppProtModelOut
+	    file 'comet_merged.ptm.ipro.prot.xml' into tppProtOut
+	    file(protein_db) // Required for ProteinProphet visualization
+	    
+	    // xinteract and refactor links in prot.xml 
+	    """
+            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
+	    sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g *.ptm.ipro.prot.xml
+            """
+	    // 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
+	}	
     }
+    else if ( params.tpp.indexOf("-i") ) {
+	// iProphet
+	process pooledTppIpro {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxmls from cometOut.collect()
+            file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect()
+	    file libra_params from file(params.libra_params)
+
+	    output:
+	    file 'comet_merged.ipro.pep.xml' into tppPepOut
+	    file 'comet_merged.ipro.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.ipro.pep.xml.index' optional true
+	    file 'comet_merged.ipro.prot-MODELS.html' into tppProtModelOut
+	    file 'comet_merged.ipro.prot.xml' into tppProtOut
+	    file(protein_db) // Required for ProteinProphet visualization
+	    
+	    // xinteract and refactor links in prot.xml 
+	    """
+            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
+	    sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g *.ipro.prot.xml
+            """
+	    // 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
+	}	
+    }
+    else {
+	// Simple
+	process pooledTpp {
+	    publishDir 'Results/Comet', mode: 'link'
+	    
+	    input:
+	    file pepxmls from cometOut.collect()
+            file protein_db from file(params.protein_db)
+	    file mzXML from cometMzXMLOut.collect()
+	    file libra_params from file(params.libra_params)
+
+	    output:
+	    // Normal run
+	    file 'comet_merged.pep.xml' into tppPepOut
+	    file 'comet_merged.pep-MODELS.html' into tppPepModelOut
+	    file 'comet_merged.pep.xml.index'
+	    file 'comet_merged.pep.xml.pIstats'
+	    file 'comet_merged.prot-MODELS.html' into tppProtModelOut
+	    file 'comet_merged.prot.xml' into tppProtOout
+	    file(protein_db) // Required for ProteinProphet visualization
+	    
+	    // xinteract and refactor links in prot.xml 
+	    """
+            xinteract $params.tpp -d$params.decoy -Ncomet_merged.pep.xml $pepxmls
+	    sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g *.prot.xml
+            """
+	    // 	sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g comet_merged.prot.xml
+	}
+    }    
 }
 else {
     // Perform a separate TPP analysis for each search result
@@ -231,41 +279,6 @@ else {
 // comet_merged.ipro.prot.xml
 // comet_merged.ipro.prot-MODELS.html
 // comet_merged.ipro.prot.xml
-
-// If we are dealing with a PTMProphet run ignore iProphet output
-
-tppProtOutPtm.into{ tppProtOutPtm1; tppProtOutPtm2 }
-tppProtOutIpro.into{ tppProtOutIpro1; tppProtOutIpro2 }
-
-if( tppProtOutPtm1.count().val > 0 ) {
-    log.info "PTMprophet"
-    tppPepOutPtm.set{ tppPepOut }
-    tppProtOutPtm2.set{ tppProtOut }
-    tppPepModelOutPtm.set{ tppPepModelOut }
-    tppProtModelOutPtm.set{ tppProtModelOut }
-}
-else if( tppProtOutIpro1.count().val > 0 ) {
-    log.info "iProphet"
-    tppPepOutIpro.set{ tppPepOut }
-    tppProtOutIpro2.set{ tppProtOut }
-    tppPepModelOutIpro.set{ tppPepModelOut }
-    tppProtModelOutIpro.set{ tppProtModelOut }
-}
-
-
-// if( tppProtOutPtm1.count().val > 0 ) {
-//     tppPepOut = tppPepOut.mix(tppPepOutPtm)
-//     tppProtOut = tppProtOut.mix(tppProtOutPtm2)
-//     tppPepModelOut = tppPepModelOut.mix(tppPepModelOutPtm)
-//     tppProModelOut = tppProModelOut.mix(tppProModelOutPtm)
-// }
-// else if( tppProtOutIpro1.count().val > 0 ) {
-//     tppPepOut = tppPepOut.mix(tppPepOutIpro)
-//     tppProtOut = tppProtOut.mix(tppProtOutIpro2)
-//     tppPepModelOut = tppPepModelOut.mix(tppPepModelOutIpro)
-//     tppProModelOut = tppProModelOut.mix(tppProModelOutIpro)
-// }
-
 
 // Duplicate tppPepOut channel so we can feed it to two processes
 tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4 }
