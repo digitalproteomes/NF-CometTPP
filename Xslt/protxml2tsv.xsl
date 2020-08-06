@@ -27,9 +27,12 @@
   <xsl:variable name="xpress"
 		select="boolean(protx:protein_summary/protx:analysis_summary[@analysis='xpress'])"/>
   <xsl:variable name="libra" select="boolean(protx:analysis_result[@analysis='libra'])"/>
+  <xsl:variable name="stpeter"
+		select="boolean(protx:protein_summary/protx:analysis_summary[@analysis='stpeter'])"/>
 
+  
   <!-- Headers -->
-  <xsl:template match="/">protein_group&#9;group_sibling_id&#9;protein&#9;subsuming_protein_entry&#9;protein_probability&#9;percent_coverage&#9;num_unique_peps&#9;percent_share_of_spectrum_id<xsl:if test="$asap">&#9;ratio_mean&#9;ratio_stdev&#9;ratio_num_peptides</xsl:if><xsl:if test="$asap_p">&#9;adjusted_ratio_mean&#9;adjusted_ratio_stdev&#9;pvalue</xsl:if><xsl:if test="$xpress">&#9;xpress_ratio_mean&#9;xpress_stdev&#9;xpress_num_peptides</xsl:if><xsl:if test="$libra">libra_mz&#9;libra_ratio&#9;libra_error</xsl:if>&#9;peptide_sequence&#9;non-degenerate<xsl:text>
+  <xsl:template match="/">protein_group&#9;group_sibling_id&#9;protein&#9;subsuming_protein_entry&#9;protein_probability&#9;percent_coverage&#9;num_unique_peps&#9;percent_share_of_spectrum_id<xsl:if test="$asap">&#9;ratio_mean&#9;ratio_stdev&#9;ratio_num_peptides</xsl:if><xsl:if test="$asap_p">&#9;adjusted_ratio_mean&#9;adjusted_ratio_stdev&#9;pvalue</xsl:if><xsl:if test="$xpress">&#9;xpress_ratio_mean&#9;xpress_stdev&#9;xpress_num_peptides</xsl:if><xsl:if test="$libra">libra_mz&#9;libra_ratio&#9;libra_error</xsl:if><xsl:if test="$stpeter">&#9;stpepter_sin&#9;stpepter_counts</xsl:if>&#9;peptide_sequence&#9;non-degenerate<xsl:text>
 </xsl:text>
 <xsl:apply-templates/>
   </xsl:template>
@@ -146,6 +149,23 @@
             </xsl:if>
           </xsl:if>
 
+	  <!-- StPeter -->
+          <xsl:if test="$stpeter">
+            <xsl:if test="../protx:analysis_result[@analysis='stpeter']">
+              <xsl:text>&#9;</xsl:text>
+              <xsl:value-of
+                  select="../protx:analysis_result[@analysis = 'stpeter']/protx:StPeterQuant/@SIn"/>
+              <xsl:text>&#9;</xsl:text>
+	      <xsl:value-of
+                  select="../protx:analysis_result[@analysis = 'stpeter']/protx:StPeterQuant/@counts"/>
+              <xsl:text>&#9;</xsl:text>
+            </xsl:if>
+            <xsl:if test="not(../protx:analysis_result[@analysis='stpeter'])">
+              <xsl:text>&#9;</xsl:text>
+            </xsl:if>
+          </xsl:if>       
+
+	  
           <!-- Peptides for this protein -->
 
           <xsl:if test="not($iprophet)">
