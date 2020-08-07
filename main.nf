@@ -108,7 +108,7 @@ process cometSearch {
     sed -i s,db_path,$protein_db, $comet_params
     sed -i 's,num_threads = 0,num_threads = ${params.comet_threads},' $comet_params
 
-    comet $mzXML
+    comet -p $comet_params $mzXML
     sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g ${mzXML.simpleName}.pep.xml
     sed -ri 's|<search_database local_path="|<search_database local_path="${workflow.launchDir}/Results/Comet/|'g ${mzXML.simpleName}.pep.xml
     """
