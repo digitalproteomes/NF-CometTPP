@@ -158,7 +158,6 @@
               <xsl:text>&#9;</xsl:text>
 	      <xsl:value-of
                   select="../protx:analysis_result[@analysis = 'stpeter']/protx:StPeterQuant/@counts"/>
-              <xsl:text>&#9;</xsl:text>
             </xsl:if>
             <xsl:if test="not(../protx:analysis_result[@analysis='stpeter'])">
               <xsl:text>&#9;</xsl:text>
@@ -189,7 +188,7 @@
 		<xsl:value-of select="protx:modification_info/@modified_peptide"/>
 	      </xsl:if>
 	      <xsl:text>&#9;</xsl:text>
-	      <xsl:value-of select="../protx:peptide/@is_nondegenerate_evidence"/>
+	      <xsl:value-of select="../@is_nondegenerate_evidence"/>
             </xsl:for-each>
           </xsl:if>
 	  <xsl:text>
