@@ -181,7 +181,6 @@
 	  </xsl:if>
           <xsl:if test="$iprophet">
 	    <xsl:for-each select="protx:indistinguishable_peptide">
-
 	      <xsl:text>&#9;</xsl:text>
 	      <xsl:if test="not(protx:modification_info)">
 		<xsl:value-of select="@peptide_sequence"/>
@@ -190,7 +189,7 @@
 		<xsl:value-of select="protx:modification_info/@modified_peptide"/>
 	      </xsl:if>
 	      <xsl:text>&#9;</xsl:text>
-	      <xsl:value-of select="@is_nondegenerate_evidence"/>
+	      <xsl:value-of select="../protx:peptide/@is_nondegenerate_evidence"/>
             </xsl:for-each>
           </xsl:if>
 	  <xsl:text>
