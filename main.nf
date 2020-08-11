@@ -177,8 +177,19 @@ if(!params.no_pool) {
 
 	    output:
 	    file 'comet_merged.ptm.ipro.pep.xml' into tppPepOutRaw
-	    file 'comet_merged.ptm.ipro.pep-MODELS.html' into tppPepModelOut
-	    file 'comet_merged.ipro.pep-MODELS.html'
+	    file 'comet_merged.ptm.ipro.pep-MODELS.html' // NOTE we
+							 // are not
+							 // using this
+							 // one
+							 // because
+							 // the Error
+							 // Table has
+							 // a bug and
+							 // the
+							 // extracted
+							 // probabilities
+							 // are wrong
+	    file 'comet_merged.ipro.pep-MODELS.html' into tppPepModelOut
 	    file 'comet_merged.pep-MODELS.html'
 	    file 'comet_merged.ptm.pep.xml.index' optional true
 	    file 'comet_merged.ptm.ipro.prot-MODELS.html' into tppProtModelOut
