@@ -76,6 +76,9 @@ Patrick Pedrioli-->
       	</xsl:if>
       	<xsl:if test="not(pepx:analysis_result[@analysis='ptmprophet'])">
       	  <xsl:text>&#9;</xsl:text>
+	  <xsl:text>&#9;</xsl:text>
+	  <xsl:text>&#9;</xsl:text>
+	  <xsl:text>&#9;</xsl:text>
       	</xsl:if>
       </xsl:if>
 
