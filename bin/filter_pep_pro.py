@@ -15,6 +15,12 @@ def get_arguments(parser):
                       help="""The tsv exported protein list.""",
                       metavar="FILE",
                       required=True)
+
+  parser.add_argument("-o", "--outfile",
+                      help="""The output file name.""",
+                      metavar="FILE",
+                      required=True)
+    
   return parser.parse_args()
 
 
@@ -43,6 +49,8 @@ def main():
       first = False
       filtered_pep_list = pd.concat([filtered_pep_list, pep_df[pep_df['protein'].str.contains(protein)]])
   filtered_pep_list = filtered_pep_list.drop_duplicates()
+
+  filtered_pep_list.to_csv(args.outfile , sep='\t')
 
 
 if __name__ == "__main__":
