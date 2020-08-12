@@ -35,7 +35,7 @@ def main():
   protfile = args.protfile
 
   # Get the list of 1%FDR proteins
-  prot_df = pd.read_csv(protfile, sep='\t', use_cols=['protein'])
+  prot_df = pd.read_csv(protfile, sep='\t', usecols=['protein'])
   protein_list =  prot_df['protein'].str.split(',').apply(pd.Series, 1).stack().unique()
 
   # Filter 1%FDR peptide list to only those that come from a protein
