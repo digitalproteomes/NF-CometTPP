@@ -85,6 +85,15 @@ if(params.help) {
 }
 
 
+Channel.fromPath("${params.dda_folder}/*.mzXML")
+    .map{ file ->
+         def key = file.name.toString().tokenize('_').get(0)
+         return tuple(key, file)
+    }
+    .groupTuple()
+    .set{ keyed_mzxmls }
+
+
 process cometSearch {
     // Search all mzXML files in $params.dda_folder with Comet
     cpus params.comet_threads
@@ -94,12 +103,12 @@ process cometSearch {
     publishDir 'Results/Comet', mode: 'link'
 
     input:
-    file mzXML from file("${params.dda_folder}/*.mzXML")
+    set key, file(mzXML) from keyed_mzxmls
     file comet_params from file(params.comet_params)
     file protein_db from file(params.protein_db)
 
     output:
-    file '*.pep.xml' into cometOut
+    set key, file('*.pep.xml') into cometOut
     file mzXML into cometMzXMLOut
 
     """
@@ -175,7 +184,7 @@ if(!params.no_pool) {
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
-	    file pepxmls from cometOut.collect()
+	    file pepxmls from cometOut.map{ it[1] }.collect()
             file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect()
 	    file libra_params from file(params.libra_params)
@@ -213,7 +222,7 @@ if(!params.no_pool) {
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
-	    file pepxmls from cometOut.collect()
+	    file pepxmls from cometOut.map{ it[1] }.collect()
             file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect()
 	    file libra_params from file(params.libra_params)
@@ -239,7 +248,7 @@ if(!params.no_pool) {
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
-	    file pepxmls from cometOut.collect()
+	    file pepxmls from cometOut.map{ it[1] }.collect()
             file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect()
 	    file libra_params from file(params.libra_params)
@@ -270,19 +279,19 @@ else {
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
-	    file pepxml from cometOut
+	    set key, file(pepxml) from cometOut
 	    file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	    file libra_params from file(params.libra_params)
 	    
 	    output:
-	    file '*_sep.ptm.ipro.pep.xml' into tppPepOutRaw
-	    file '*_sep.ptm.ipro.prot.xml' optional true into tppProtOutRaw
-	    file '*_sep.ptm.ipro.pep-MODELS.html' into tppPepModelOut
+	    set key, file('*_sep.ptm.ipro.pep.xml') into tppPepOutRaw
+	    set key, file('*_sep.ptm.ipro.prot.xml') optional true into tppProtOutRaw
+	    set key, file('*_sep.ptm.ipro.pep-MODELS.html') into tppPepModelOut
 	    file '*_sep.ipro.pep-MODELS.html'
 	    file '*_sep.pep-MODELS.html'
 	    file '*_sep.ptm.ipro.pep.xml.index' optional true
-	    file '*_sep.ptm.ipro.prot-MODELS.html' optional true into tppProtModelOut
+	    set key, file('*_sep.ptm.ipro.prot-MODELS.html') optional true into tppProtModelOut
 	    file(protein_db) // Required for ProteinProphet visualization
 
 	    // xinteract and refactor links in prot.xml 
@@ -297,18 +306,18 @@ else {
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
-	    file pepxml from cometOut
+	    set key, file(pepxml) from cometOut
 	    file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	    file libra_params from file(params.libra_params)
 	    
 	    output:
-	    file '*_sep.ipro.pep.xml' into tppPepOutRaw
-	    file '*_sep.ipro.prot.xml' optional true into tppProtOutRaw
-	    file '*_sep.ipro.pep-MODELS.html' into tppPepModelOut
+	    set key, file('*_sep.ipro.pep.xml') into tppPepOutRaw
+	    set key, file('*_sep.ipro.prot.xml') optional true into tppProtOutRaw
+	    set key, file('*_sep.ipro.pep-MODELS.html') into tppPepModelOut
 	    file '*_sep.pep-MODELS.html'
 	    file '*_sep.ipro.pep.xml.index' optional true
-	    file '*_sep.ipro.prot-MODELS.html' optional true into tppProtModelOut
+	    set key, file('*_sep.ipro.prot-MODELS.html') optional true into tppProtModelOut
 	    file(protein_db) // Required for ProteinProphet visualization
 
 	    // xinteract and refactor links in prot.xml 
@@ -323,18 +332,18 @@ else {
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
-	    file pepxml from cometOut
+	    set key, file pepxml from cometOut
 	    file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	    file libra_params from file(params.libra_params)
 	    
 	    output:
-	    file '*_sep.pep.xml' into tppPepOutRaw
-	    file '*_sep.prot.xml' optional true into tppProtOutRaw
-	    file '*_sep.pep-MODELS.html' into tppPepModelOut
+	    set key, file('*_sep.pep.xml') into tppPepOutRaw
+	    set key, file('*_sep.prot.xml') optional true into tppProtOutRaw
+	    set key, file('*_sep.pep-MODELS.html') into tppPepModelOut
 	    file '*_sep.pep.xml.index'
 	    file '*_sep.pep.xml.pIstats'
-	    file '*_sep.prot-MODELS.html' optional true into tppProtModelOut
+	    set key, file('*_sep.prot-MODELS.html') optional true into tppProtModelOut
 	    file(protein_db) // Required for ProteinProphet visualization
 
 	    // xinteract and refactor links in prot.xml 
@@ -352,10 +361,10 @@ process refactorPepXml {
     publishDir 'Results/Comet', mode: 'link'
 
     input:
-    file pepxml from tppPepOutRaw
+    set key, file(pepxml) from tppPepOutRaw
 
     output:
-    file pepxml into tppPepOut
+    set key, file(pepxml) into tppPepOut
 
     """
     sed -ri 's|/tmp/nxf.{11}|${workflow.launchDir}/Results/Comet/|'g $pepxml
@@ -369,10 +378,10 @@ process refactorProtXml {
     publishDir 'Results/Comet', mode: 'link'
 
     input:
-    file protxml from tppProtOutRaw
+    set key, file(protxml) from tppProtOutRaw
 
     output:
-    file protxml into tppProtOut
+    set key, file(protxml) into tppProtOut
 
     """
     sed -ri 's|/work/.{2}/.{30}|/Results/Comet|'g $protxml 
@@ -390,12 +399,12 @@ tppProtOut.into{ tppProtOut1; tppProtOut2; tppProtOut3; tppProtOut4 }
 // Run label-free quantification
 process stPeter {
     input:
-    file protxml from tppProtOut1
-    file pepxml from tppPepOut3
+    tppPepOut3.join(tppProtOut1).set{ joined_stPeter }
+    set key, file(pepxml), file(protxml) from joined_stPeter
     file mzXML from file("${params.dda_folder}/*.mzXML")
 
     output:
-    file protxml into tppProtOut
+    file protxml into stPeterOut
     
     script:
     """
@@ -411,7 +420,7 @@ process mayu {
     errorStrategy 'ignore'
     
     input:
-    file pepxml from tppPepOut1
+    file pepxml from tppPepOut1.map{ it[1] }
     file comet_params from (params.comet_params)
     file db from file(params.protein_db)
     
@@ -423,7 +432,7 @@ process mayu {
     -C $db \
     -E $params.decoy \
     -M mayu_$pepxml \
-    -P pepFDR=0.01:1
+    -P pep FDR=0.01:1
     """
 }
 
@@ -433,8 +442,8 @@ process tppStat {
     publishDir 'Results/Comet', mode: 'link'
     
     input:
-    file pepxml from tppPepOut2
-    file protxml from tppProtOut2
+    tppPepOut2.join(tppProtOut2).set{ joined_tppStat }
+    set key, file(pepxml), file(protxml) from joined_tppStat
 
     output:
     file '*.summary.txt' into tppStatOut
@@ -451,12 +460,12 @@ process pepxml2tsv {
     publishDir 'Results/TppExport', mode: 'link'
 
     input:
-    file pepXmlModels from tppPepModelOut
-    file pepXml from tppPepOut4
+    tppPepOut4.join(tppPepModelOut).set{ joined_pepxml2tsv }
+    set key, file(pepXml), file(pepXmlModels) from joined_pepxml2tsv
     file pepxsl from file("$baseDir/Xslt/pepxml2tsv.xsl")
     
     output:
-    file '*.tsv' into pepTsvOut
+    set key, file ('*.tsv') into pepTsvOut
 
     """
     PROB=\$(get_prophet_prob.py -i $pepXmlModels)
@@ -471,12 +480,12 @@ process protxml2tsv {
     publishDir 'Results/TppExport', mode: 'link'
 
     input:
-    file protXmlModels from tppProtModelOut
-    file protXml from tppProtOut3
+    tppProtOut3.join(tppProtModelOut).set{ joined_protxml2tsv }
+    set key, file(protXml), file(protXmlModels) from joined_protxml2tsv
     file protxsl from file("$baseDir/Xslt/protxml2tsv.xsl")
     
     output:
-    file '*.tsv' into protTsvOut
+    set key, file('*.tsv') into protTsvOut
 
     """
     PROB=\$(get_prophet_prob.py -i $protXmlModels)
@@ -494,10 +503,8 @@ process filterPepTsv {
     publishDir 'Results/TppExport', mode: 'link'
 
     input:
-    // These will be in sync since corresponding pep and prot xml are
-    // being generated by the same process
-    file pepTsv from pepTsvOut
-    file protTsv from protTsvOut
+    pepTsvOut.join(protTsvOut).set{ joined_filterPepTsv }
+    set key, file(pepTsv), file(protTsv) from joined_filterPepTsv
 
     output:
     file '*.tsv'
