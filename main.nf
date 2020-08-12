@@ -85,7 +85,6 @@ if(params.help) {
 }
 
 
-
 process cometSearch {
     // Search all mzXML files in $params.dda_folder with Comet
     cpus params.comet_threads
@@ -114,6 +113,10 @@ process cometSearch {
     """
 }
 
+
+// Overview of the files created by xinteract:
+// ------------------------------------------
+//
 // For a standard pooled run tppProtOutPtm and tppProtOutIpro are
 // going to be empty
 // NOTE: these are also going to be empty if the xinteract parameters
@@ -163,7 +166,9 @@ process cometSearch {
 if(!params.no_pool) {
     // Aggregate individual search results into a merged TPP analysis
     
-    // We need to handle simple, iProphet and PTMProphet cases separately
+    // We need to handle simple, iProphet and PTMProphet cases
+    // separately to account for the different output files that will
+    // be generated
     if ( params.tpp.indexOf("-M") != -1 ) {
 	// PTMProphet
 	process pooledTppPtm {
@@ -341,6 +346,8 @@ else {
 }
 
 
+// pepXml uses absolute links. Fix them after moving them to the
+// publishDir
 process refactorPepXml {
     publishDir 'Results/Comet', mode: 'link'
 
@@ -356,6 +363,8 @@ process refactorPepXml {
 }
 
 
+// protXml uses absolute links. Fix them after moving them to the
+// publishDir
 process refactorProtXml {
     publishDir 'Results/Comet', mode: 'link'
 
@@ -371,12 +380,14 @@ process refactorProtXml {
     """
 }
 
-// Duplicate tppPepOut channel so we can feed it to two processes
+// Multiply tppPepOut channel so we can feed it to multiple processes
 tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4 }
 
+// Multiply tppProtOut channel so we can feed it to multiple processes
 tppProtOut.into{ tppProtOut1; tppProtOut2; tppProtOut3; tppProtOut4 }
 
 
+// Run label-free quantification
 process stPeter {
     input:
     file protxml from tppProtOut1
@@ -384,7 +395,7 @@ process stPeter {
     file mzXML from file("${params.dda_folder}/*.mzXML")
 
     output:
-
+    file protxml into tppProtOut
     
     script:
     """
