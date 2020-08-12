@@ -475,6 +475,10 @@ process protxml2tsv {
 
 
 process filterPepTsv {
+    tag "$pepTsv - $protTsv"
+    
+    publishDir 'Results/TppExport', mode: 'link'
+
     input:
     file pepTsv from pepTsvOut
     file protTsv from protTsvOut
