@@ -445,7 +445,7 @@ process pepxml2tsv {
     file pepxsl from file("$baseDir/Xslt/pepxml2tsv.xsl")
     
     output:
-    file '*.tsv'
+    file '*.tsv' into pepTsvOut
 
     """
     PROB=\$(get_prophet_prob.py -i $pepXmlModels)
@@ -465,11 +465,26 @@ process protxml2tsv {
     file protxsl from file("$baseDir/Xslt/protxml2tsv.xsl")
     
     output:
-    file '*.tsv'
+    file '*.tsv' into protTsvOut
 
     """
     PROB=\$(get_prophet_prob.py -i $protXmlModels)
     xsltproc --param p_threshold \$PROB $protxsl $protXml > ${protXml}.tsv
+    """
+}
+
+
+process filterPepTsv {
+    input:
+    file pepTsv from pepTsvOut
+    file protTsv from protTsvOut
+
+    output:
+    file '*.tsv'
+    
+    script:
+    """
+    filter_pep_pro.py -p $pepTsv -P $protTsv -o ${pepTsv.baseName}_filtered.tsv
     """
 }
 
