@@ -404,7 +404,7 @@ process stPeter {
     file mzXML from file("${params.dda_folder}/*.mzXML")
 
     output:
-    file protxml into stPeterOut
+    set key, file(protxml) into stPeterOut
     
     script:
     """
@@ -480,7 +480,8 @@ process protxml2tsv {
     publishDir 'Results/TppExport', mode: 'link'
 
     input:
-    tppProtOut3.join(tppProtModelOut).set{ joined_protxml2tsv }
+    //tppProtOut3.join(tppProtModelOut).set{ joined_protxml2tsv }
+    stPeterOut.join(tppProtModelOut).set{ joined_protxml2tsv }
     set key, file(protXml), file(protXmlModels) from joined_protxml2tsv
     file protxsl from file("$baseDir/Xslt/protxml2tsv.xsl")
     
