@@ -47,7 +47,7 @@ def main():
     if first:
       filtered_pep_list = pep_df[pep_df['protein'].str.contains(protein)]
       first = False
-      filtered_pep_list = pd.concat([filtered_pep_list, pep_df[pep_df['protein'].str.contains(protein)]])
+    filtered_pep_list = pd.concat([filtered_pep_list, pep_df[pep_df['protein'].str.contains(protein)]])
   filtered_pep_list = filtered_pep_list.drop_duplicates()
 
   filtered_pep_list.to_csv(args.outfile , sep='\t')
