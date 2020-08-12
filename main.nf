@@ -393,7 +393,7 @@ process refactorProtXml {
 tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4 }
 
 // Multiply tppProtOut channel so we can feed it to multiple processes
-tppProtOut.into{ tppProtOut1; tppProtOut2; tppProtOut3; tppProtOut4 }
+tppProtOut.into{ tppProtOut1; tppProtOut2 }
 
 
 // Run label-free quantification
