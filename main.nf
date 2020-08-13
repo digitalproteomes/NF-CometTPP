@@ -87,7 +87,7 @@ if(params.help) {
 
 Channel.fromPath("${params.dda_folder}/*.mzXML")
     .map{ file ->
-         def key = file.name.toString().tokenize('_').get(0)
+         def key = file.name.toString()
          return tuple(key, file)
     }
     .groupTuple()
