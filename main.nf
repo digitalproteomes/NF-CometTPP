@@ -190,7 +190,7 @@ if(!params.no_pool) {
 	    file libra_params from file(params.libra_params)
 
 	    output:
-	    set val('pooled'), file 'comet_merged.ptm.ipro.pep.xml' into tppPepOutRaw
+	    set val('pooled'), file('comet_merged.ptm.ipro.pep.xml') into tppPepOutRaw
 	    file 'comet_merged.ptm.ipro.pep-MODELS.html' // NOTE we
 							 // are not
 							 // using this
@@ -203,11 +203,11 @@ if(!params.no_pool) {
 							 // extracted
 							 // probabilities
 							 // are wrong
-	    set val('pooled'), file 'comet_merged.ipro.pep-MODELS.html' into tppPepModelOut
+	    set val('pooled'), file('comet_merged.ipro.pep-MODELS.html') into tppPepModelOut
 	    file 'comet_merged.pep-MODELS.html'
 	    file 'comet_merged.ptm.pep.xml.index' optional true
-	    set val('pooled'), file 'comet_merged.ptm.ipro.prot-MODELS.html' into tppProtModelOut
-	    set val('pooled'), file 'comet_merged.ptm.ipro.prot.xml' into tppProtOutRaw
+	    set val('pooled'), file('comet_merged.ptm.ipro.prot-MODELS.html') into tppProtModelOut
+	    set val('pooled'), file('comet_merged.ptm.ipro.prot.xml') into tppProtOutRaw
 	    file(protein_db) // Required for ProteinProphet visualization
 	    
 	    // xinteract for PTMProphet
@@ -228,12 +228,12 @@ if(!params.no_pool) {
 	    file libra_params from file(params.libra_params)
 
 	    output:
-	    set val('pooled'), file 'comet_merged.ipro.pep.xml' into tppPepOutRaw
-	    set val('pooled'), file 'comet_merged.ipro.pep-MODELS.html' into tppPepModelOut
+	    set val('pooled'), file('comet_merged.ipro.pep.xml') into tppPepOutRaw
+	    set val('pooled'), file('comet_merged.ipro.pep-MODELS.html') into tppPepModelOut
 	    file 'comet_merged.pep-MODELS.html'
 	    file 'comet_merged.ipro.pep.xml.index' optional true
-	    set val('pooled'), file 'comet_merged.ipro.prot-MODELS.html' optional true into tppProtModelOut
-	    set val('pooled'), file 'comet_merged.ipro.prot.xml' optional true into tppProtOutRaw
+	    set val('pooled'), file('comet_merged.ipro.prot-MODELS.html') optional true into tppProtModelOut
+	    set val('pooled'), file('comet_merged.ipro.prot.xml') optional true into tppProtOutRaw
 	    file(protein_db) // Required for ProteinProphet visualization
 	    
 	    // xinteract for iProphet
@@ -255,12 +255,12 @@ if(!params.no_pool) {
 
 	    output:
 	    // Normal run
-	    set val('pooled'), file 'comet_merged.pep.xml' into tppPepOutRaw
-	    set val('pooled'), file 'comet_merged.pep-MODELS.html' into tppPepModelOut
+	    set val('pooled'), file('comet_merged.pep.xml') into tppPepOutRaw
+	    set val('pooled'), file('comet_merged.pep-MODELS.html') into tppPepModelOut
 	    file 'comet_merged.pep.xml.index'
 	    file 'comet_merged.pep.xml.pIstats'
-	    set val('pooled'), file 'comet_merged.prot-MODELS.html' optional true into tppProtModelOut
-	    set val('pooled'), file 'comet_merged.prot.xml' optional true into tppProtOutRaw
+	    set val('pooled'), file('comet_merged.prot-MODELS.html') optional true into tppProtModelOut
+	    set val('pooled'), file('comet_merged.prot.xml') optional true into tppProtOutRaw
 	    file(protein_db) // Required for ProteinProphet visualization
 	    
 	    // xinteract
