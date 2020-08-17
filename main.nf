@@ -332,7 +332,7 @@ else {
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
-	    set key, file pepxml from cometOut
+	    set key, file(pepxml) from cometOut
 	    file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	    file libra_params from file(params.libra_params)
