@@ -35,9 +35,11 @@ Patrick Pedrioli-->
     <xsl:variable name="pep_p">
       <xsl:choose>
 	<xsl:when test="$iprophet">
+	  <!-- Use iProphet probability if present -->
 	  <xsl:value-of select="pepx:analysis_result[@analysis='interprophet']/pepx:interprophet_result/@probability"/>
 	</xsl:when>
 	<xsl:otherwise>
+	  <!-- Use PeptideProphet if not -->
 	  <xsl:value-of select="pepx:analysis_result[@analysis='peptideprophet']/pepx:peptideprophet_result/@probability"/>
 	</xsl:otherwise>
       </xsl:choose>
