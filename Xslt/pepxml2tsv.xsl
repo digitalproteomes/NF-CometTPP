@@ -32,7 +32,17 @@ Patrick Pedrioli-->
 
   <xsl:template match="pepx:search_hit[@hit_rank='1']">
     <!-- Make sure the probability passes the threshold criteria -->
-    <xsl:variable name="pep_p" select="pepx:analysis_result[@analysis='peptideprophet']/pepx:peptideprophet_result/@probability"/>
+    <xsl:variable name="pep_p">
+      <xsl:choose>
+	<xsl:when test="$iprophet">
+	  <xsl:value-of select="pepx:analysis_result[@analysis='interprophet']/pepx:interprophet_result/@probability"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="pepx:analysis_result[@analysis='peptideprophet']/pepx:peptideprophet_result/@probability"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
     <xsl:if test="$pep_p &gt;= $p_threshold">
       <xsl:value-of select="@peptide"/>
       <xsl:text>&#9;</xsl:text><xsl:value-of select="../../@assumed_charge"/>
