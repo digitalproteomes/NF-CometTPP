@@ -32,7 +32,7 @@
 
   
   <!-- Headers -->
-  <xsl:template match="/">protein_group&#9;group_sibling_id&#9;protein&#9;description&#9;subsuming_protein_entry&#9;protein_probability&#9;percent_coverage&#9;num_unique_peps&#9;percent_share_of_spectrum_id<xsl:if test="$asap">&#9;ratio_mean&#9;ratio_stdev&#9;ratio_num_peptides</xsl:if><xsl:if test="$asap_p">&#9;adjusted_ratio_mean&#9;adjusted_ratio_stdev&#9;pvalue</xsl:if><xsl:if test="$xpress">&#9;xpress_ratio_mean&#9;xpress_stdev&#9;xpress_num_peptides</xsl:if><xsl:if test="$libra">libra_mz&#9;libra_ratio&#9;libra_error</xsl:if><xsl:if test="$stpeter">&#9;stpepter_si&#9;stpepter_sin&#9;stpepter_counts</xsl:if>&#9;peptide_sequence&#9;non-degenerate<xsl:text>
+  <xsl:template match="/">protein_group&#9;group_sibling_id&#9;protein&#9;description&#9;subsuming_protein_entry&#9;protein_probability&#9;percent_coverage&#9;num_unique_peps&#9;percent_share_of_spectrum_id<xsl:if test="$asap">&#9;ratio_mean&#9;ratio_stdev&#9;ratio_num_peptides</xsl:if><xsl:if test="$asap_p">&#9;adjusted_ratio_mean&#9;adjusted_ratio_stdev&#9;pvalue</xsl:if><xsl:if test="$xpress">&#9;xpress_ratio_mean&#9;xpress_stdev&#9;xpress_num_peptides</xsl:if><xsl:if test="$libra">libra_mz&#9;libra_ratio&#9;libra_error</xsl:if><xsl:if test="$stpeter">&#9;stpeter_si&#9;stpeter_sin&#9;stpeter_counts</xsl:if>&#9;peptide_sequence&#9;non-degenerate<xsl:text>
 </xsl:text>
 <xsl:apply-templates/>
   </xsl:template>
