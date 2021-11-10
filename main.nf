@@ -390,7 +390,7 @@ process refactorProtXml {
 }
 
 // Multiply tppPepOut channel so we can feed it to multiple processes
-tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4 }
+tppPepOut.into{ tppPepOut1; tppPepOut2; tppPepOut3; tppPepOut4; tppPepOut5 }
 
 // Multiply tppProtOut channel so we can feed it to multiple processes
 tppProtOut.into{ tppProtOut1; tppProtOut2 }
@@ -412,6 +412,33 @@ process stPeter {
     """
 }
 
+
+// Multiply stPeterOut channel so we can feed it to multiple processes
+stPeterOut.into{ stPeterOut1; stPeterOut2 }
+
+
+// Combine StPeter analysis of individual prot.xml into a quantitative matrix
+//
+// NOTE StPeter2Matrix uses a combined prot.xml for probability
+// filtering. Since we cannot be sure that we have one, we are going
+// to generate one at this step. In this first implementation, user
+// parameters are not considered.
+process stPeter2Matrix {
+    publishDir 'Results/TppExport', mode: 'link'
+    
+    input:
+    file pepxmls from tppPepOut5.map{ it[1] }.collect()
+    file protxmls from stPeterOut1.map{ it[1] }.collect()
+    
+    output:
+    file 'merged_stpeter.tsv'
+
+    script:
+    """
+    ProteinProphet $pepxmls protxml4stpeter.prot.xml
+    StPeter2Matrix -g protxml4stpeter.prot.xml $protxmls merged_stpeter.tsv
+    """
+}
 
 process mayu {
     // For each TPP analysis run Mayu
@@ -481,7 +508,7 @@ process protxml2tsv {
 
     input:
     //tppProtOut3.join(tppProtModelOut).set{ joined_protxml2tsv }
-    stPeterOut.join(tppProtModelOut).set{ joined_protxml2tsv }
+    stPeterOut2.join(tppProtModelOut).set{ joined_protxml2tsv }
     set key, file(protXml), file(protXmlModels) from joined_protxml2tsv
     file protxsl from file("$baseDir/Xslt/protxml2tsv.xsl")
     
