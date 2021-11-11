@@ -32,7 +32,7 @@ def get_table(soup, text='Error Table'):
   """Returns the table with text in the first td element
   """
   for table in soup.findAll('table'):
-    if table.find('td').getText() == 'Error Table':
+    if table.find('th').getText() == 'Error Table':
       return table
     
 
@@ -49,16 +49,18 @@ def get_generic_error_table(soup):
   count = 0
   m_table = []
   for row in table.findAll('tr'):
-    if row.has_attr('class'):
-      if 'theader' in row.get('class'):
-        count = count + 1
-      if count > 1:
-        break
-    else:
-      m_row = []
-      for cell in row.findAll('td'):
-        m_row.append(float(cell.getText()))
-      m_table.append(m_row)
+    for table_header in row.findAll('th'):
+      if table_header.has_attr('class'):
+        if 'head' in table_header.get('class'):
+          count = count + 1
+          if count > 1:
+            break
+    if count > 1:
+      break
+    m_row = []
+    for cell in row.findAll('td'):
+      m_row.append(float(cell.getText()))
+    m_table.append(m_row)
 
   return pd.DataFrame(m_table,
                       columns=['error_rate', 'min_prob', 'num_correct', 'num_incorrect'])
