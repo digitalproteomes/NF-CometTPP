@@ -181,6 +181,7 @@ if(!params.no_pool) {
     if ( params.tpp.indexOf("-M") != -1 ) {
 	// PTMProphet
 	process pooledTppPtm {
+	    cpus "$xinteract_threads"
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
@@ -188,6 +189,7 @@ if(!params.no_pool) {
             file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect()
 	    file libra_params from file(params.libra_params)
+	    val xinteract_threads
 
 	    output:
 	    set val('pooled'), file('comet_merged.ptm.ipro.pep.xml') into tppPepOutRaw
@@ -219,6 +221,7 @@ if(!params.no_pool) {
     else if ( params.tpp.indexOf("-i") != -1 ) {
 	// iProphet
 	process pooledTppIpro {
+	    cpus "$xinteract_threads"
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
@@ -226,6 +229,7 @@ if(!params.no_pool) {
             file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect()
 	    file libra_params from file(params.libra_params)
+	    val xinteract_threads
 
 	    output:
 	    set val('pooled'), file('comet_merged.ipro.pep.xml') into tppPepOutRaw
@@ -245,6 +249,7 @@ if(!params.no_pool) {
     else {
 	// Simple
 	process pooledTpp {
+	    cpus "$xinteract_threads"
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
@@ -252,6 +257,7 @@ if(!params.no_pool) {
             file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect()
 	    file libra_params from file(params.libra_params)
+	    val xinteract_threads
 
 	    output:
 	    // Normal run
@@ -276,6 +282,7 @@ else {
     if ( params.tpp.indexOf("-M") != -1 ) {
 	//PTMProphet
 	process splitTppPtm {
+	    cpus "$xinteract_threads"
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
@@ -283,6 +290,7 @@ else {
 	    file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	    file libra_params from file(params.libra_params)
+	    val xinteract_threads
 	    
 	    output:
 	    set key, file('*_sep.ptm.ipro.pep.xml') into tppPepOutRaw
@@ -303,6 +311,7 @@ else {
     else if ( params.tpp.indexOf("-i") != -1 ) {
 	//iProphet
 	process splitTppIpro {
+	    cpus "$xinteract_threads"
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
@@ -310,6 +319,7 @@ else {
 	    file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	    file libra_params from file(params.libra_params)
+	    val xinteract_threads
 	    
 	    output:
 	    set key, file('*_sep.ipro.pep.xml') into tppPepOutRaw
@@ -329,6 +339,7 @@ else {
     else {
 	// Simple
 	process splitTpp {
+	    cpus "$xinteract_threads"
 	    publishDir 'Results/Comet', mode: 'link'
 	    
 	    input:
@@ -336,6 +347,7 @@ else {
 	    file protein_db from file(params.protein_db)
 	    file mzXML from cometMzXMLOut.collect() // IMPROVE: We don't actually need them all.
 	    file libra_params from file(params.libra_params)
+	    val xinteract_threads
 	    
 	    output:
 	    set key, file('*_sep.pep.xml') into tppPepOutRaw
