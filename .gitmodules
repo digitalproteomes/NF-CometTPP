@@ -1,0 +1,3 @@
+[submodule "nfmodule_tpp"]
+	path = nfmodule_tpp
+	url = https://github.com/digitalproteomes/nfmodule_tpp.git
