@@ -55,7 +55,6 @@ workflow {
 
 	tpp_peter(tpp_main.out.pepxmls,
 		  tpp_main.out.protxmls,
-		  channel.fromPath("$params.dda_folder/*").collect(),
-		  params.no_pool)
+		  channel.fromPath("$params.dda_folder/*").collect())
     }
 }
