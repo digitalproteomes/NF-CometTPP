@@ -74,21 +74,20 @@ The `--no_pool` parameter can be used to bypass this behaviour and analyze all M
 
 ## Workflow parameters:
 
-*  `--help`:          show an help message
 *  `--dda_folder`:    folder with DDA files to be searched (default: Data/DDA)
 *  `--comet_params`:  comet parameter file (default: Params/comet.params)
-*  `--comet_threads`: number of cores to be used in comet search (default: 8)
+*  `--comet_threads`: number of cores to be used in comet search (default: 20)
 *  `--protein_db`:    fasta formatted sequence database file (default: Results/Databases/proteome.fasta)
 *  `--tpp`:           options to pass to TPP xinteract (default: -OAPdplIw -PPM)
 *  `--decoy`:         decoy prefix used in protein_db (default: DECOY_)
 *  `--no_pool`:       do not pool results at the TPP step (default: false)
-*  `--libra_params`:  libra parameter file (default: NO_FILE)
+*  `--xinteract_threads`:       number of cores to be used at xinteract step (default: 50)
 
 
 ## Workflow results:
 
 * pep and prot xml files are stored under Results/Comet
-* TSV exports of pep and prot XML (filtered at 1% FDR) are stored under Results/TppExport
+* TSV exports of pep (pep.xml.tsv) and prot (prot.xml.tsv) XML (filtered at 1% FDR) are stored under Results/TppExport. A peptide level TSV export filtered at 1% FDR for both protein and peptides is also created in the same folder (pep.xml_filtered.tsv)
 
 
 ## Requirements:
