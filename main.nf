@@ -41,10 +41,12 @@ workflow {
 		  params.protein_db,
 		  params.decoy)
 
-    tpp_exports(tpp_main.out.pepxmls,
-		tpp_main.out.pepxmlmodels,
-		tpp_main.out.protxmls,
-		tpp_main.out.protxmlmodels)
+    if(params.export_to_tsv) {
+	tpp_exports(tpp_main.out.pepxmls,
+		    tpp_main.out.pepxmlmodels,
+		    tpp_main.out.protxmls,
+		    tpp_main.out.protxmlmodels)
+    }
 
     if(params.no_pool) {
 	// StPeter only makes sense if did not pool pep.xmls
@@ -56,5 +58,9 @@ workflow {
 	tpp_peter(tpp_main.out.pepxmls,
 		  tpp_main.out.protxmls,
 		  channel.fromPath("$params.dda_folder/*").collect())
+    }
+
+    if(params.patch_for_progenesis) {
+	apply_progenesis_patch(tpp_main.out.pepxmls)
     }
 }
