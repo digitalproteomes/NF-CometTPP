@@ -4,7 +4,8 @@ include {tpp_main;
 	 tpp_summaries;
 	 tpp_exports;
 	 run_proteinprophet;
-	 tpp_peter
+	 tpp_peter;
+	 apply_progenesis_patch	 
 } from './nfmodule_tpp/tpp_workflows.nf'
 
 workflow {
