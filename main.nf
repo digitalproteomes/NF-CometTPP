@@ -55,10 +55,19 @@ workflow {
     }
 
     if(params.export_to_tsv) {
-	tpp_exports(tpp_main.out.pepxmls,
-		    tpp_main.out.pepxmlmodels,
-		    tpp_main.out.protxmls,
-		    tpp_main.out.protxmlmodels)
+	if(params.no_pool) {
+	    // StPeter changes the prot.xml files in place we need to wait for it to finish
+	    tpp_exports(tpp_main.out.pepxmls,
+			tpp_main.out.pepxmlmodels,
+			tpp_peter.out.protxmls,
+			tpp_main.out.protxmlmodels)
+	}
+	else {
+	    tpp_exports(tpp_main.out.pepxmls,
+			tpp_main.out.pepxmlmodels,
+			tpp_main.out.protxmls,
+			tpp_main.out.protxmlmodels)
+	}
     }
 
     if(params.patch_for_progenesis) {
